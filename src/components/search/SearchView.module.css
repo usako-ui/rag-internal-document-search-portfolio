@@ -1,0 +1,441 @@
+/**
+ * 文書を検索する画面（`/search`）
+ *
+ * PC・タブレット：一覧（flex:1）＋ 詳細（320px）の2カラム
+ * スマホ（≤900px）：詳細を一覧の上へ積み、一覧は1件ずつのカード表示に切り替える
+ */
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ─── 上部：フィルターエリア ─── */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bgw);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 10px;
+  background: var(--bgw);
+  flex: 1;
+  min-width: 180px;
+  transition: border-color 0.13s;
+}
+
+.searchField:focus-within {
+  border-color: var(--green);
+}
+
+.searchIcon {
+  color: var(--tsub);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 8px 0;
+  font-size: var(--fs-card);
+  color: var(--tbody);
+  width: 100%;
+}
+
+.select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  color: var(--navy);
+  background: var(--bgw);
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+/* 読み上げ専用のラベル（選択肢の意味を支援技術へ伝える） */
+.srOnlyLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ─── 本体レイアウト ─── */
+.layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.listColumn {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 20px 24px;
+}
+
+.summary {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-bottom: 8px;
+}
+
+.errorNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid var(--danger);
+  background: #fef2f2;
+  color: var(--danger);
+  border-radius: 9px;
+  padding: 11px 13px;
+  font-size: var(--fs-card);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.noticeIcon {
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ─── 一覧（ボタンの縦並び） ─── */
+.table {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bgw);
+  overflow: hidden;
+  list-style: none;
+}
+
+.headRow,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 2.4fr) minmax(0, 1.3fr) 132px 104px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+.headRow {
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  color: var(--tsub);
+  background: var(--bgp);
+  border-bottom: 1px solid var(--border);
+}
+
+.row {
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  font-size: var(--fs-card);
+  color: var(--tbody);
+  font-family: var(--font);
+  transition: background 0.13s;
+}
+
+.table li:last-child .row {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: var(--bgp);
+}
+
+/* 選択中の行。左のグリーンの線で「いま見ている文書」を示す */
+.rowSelected {
+  background: var(--green-soft);
+  box-shadow: inset 3px 0 0 var(--green);
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.pdfIcon {
+  color: var(--pdf-red);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* スマホのカード表示でのみ出す項目名 */
+.cellLabel {
+  display: none;
+}
+
+.emptyText {
+  padding: 22px 14px;
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  text-align: center;
+  line-height: 1.7;
+}
+
+/* ─── 登録状態バッジ ─── */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.statusReady {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.statusProcessing {
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.statusError {
+  color: var(--danger);
+  background: #fef2f2;
+}
+
+/* ─── 詳細表示 ─── */
+.detail {
+  width: 320px;
+  min-width: 320px;
+  border-left: 1px solid var(--border);
+  background: var(--bgw);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 11px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.detailTitle {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.detailClose {
+  border: none;
+  background: transparent;
+  color: var(--tsub);
+  border-radius: 6px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.13s;
+}
+
+.detailClose:hover {
+  color: var(--navy);
+}
+
+.detailBody {
+  padding: 14px 16px 18px;
+}
+
+.detailName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.detailList {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 7px 10px;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-card);
+}
+
+.detailList dt {
+  color: var(--tsub);
+  font-weight: 700;
+}
+
+.detailList dd {
+  color: var(--tbody);
+  min-width: 0;
+  word-break: break-all;
+}
+
+/* 登録状態の意味を言葉で補う（「ready」等の内部の値を見せない） */
+.detailNote {
+  margin-top: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bgp);
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.7;
+}
+
+.detailActions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.detailPrimary,
+.detailSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  transition:
+    background 0.13s,
+    border-color 0.13s;
+}
+
+.detailPrimary {
+  background: var(--green);
+  color: #fff;
+}
+
+.detailPrimary:hover {
+  background: var(--green-h);
+}
+
+.detailSecondary {
+  border: 1px solid var(--border);
+  color: var(--navy);
+}
+
+.detailSecondary:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+/* ────────────────────────────────
+   タブレット
+──────────────────────────────── */
+@media (max-width: 1024px) {
+  .detail {
+    width: 280px;
+    min-width: 280px;
+  }
+
+  .headRow,
+  .row {
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) 122px 96px;
+    padding: 10px 12px;
+  }
+}
+
+/* ────────────────────────────────
+   スマホ・小さめのタブレット（≤900px）
+   詳細は横に並べず、一覧の上へ積む
+──────────────────────────────── */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column-reverse;
+    overflow-y: auto;
+  }
+
+  .listColumn {
+    overflow: visible;
+    padding: 14px;
+  }
+
+  .detail {
+    width: 100%;
+    min-width: 0;
+    border-left: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+  }
+
+  .headRow {
+    display: none;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 13px 14px;
+  }
+
+  .cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: normal;
+  }
+
+  /* カードでは列見出しが無いため、各値の前に項目名を出す */
+  .cellLabel {
+    display: inline-block;
+    min-width: 68px;
+    font-size: var(--fs-sub);
+    font-weight: 700;
+    color: var(--tsub);
+  }
+}

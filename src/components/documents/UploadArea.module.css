@@ -1,0 +1,225 @@
+/**
+ * PDFアップロードエリア（文書管理画面の上部）
+ *
+ * 以前の右カラムパネル（UploadPanel）と違い、画面の本文として横幅いっぱいに置く。
+ * ドロップ先が最初から見えている状態を保つこと（UX優先順位2位）。
+ */
+
+.card {
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bgp);
+}
+
+.cardIcon {
+  color: var(--green);
+  display: flex;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.4;
+}
+
+.cardSub {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-top: 1px;
+  line-height: 1.5;
+}
+
+.cardBody {
+  padding: 14px 16px 16px;
+}
+
+/* ─── ドロップゾーン ─── */
+.dropzone {
+  border: 1.5px dashed var(--dropzone-border);
+  border-radius: 10px;
+  padding: 26px 14px;
+  text-align: center;
+  background: var(--bgp);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  width: 100%;
+}
+
+.dropzone:hover,
+.dropzoneActive {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.dropzoneIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 7px;
+  color: #9ca3af;
+}
+
+.dropzoneText {
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.dropzoneText strong {
+  color: var(--navy);
+}
+
+.selectButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 16px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.dropzone:hover .selectButton {
+  background: var(--green-h);
+}
+
+.note {
+  font-size: 10px;
+  color: var(--tsub);
+  margin-top: 8px;
+}
+
+/* 隠しファイル入力（見た目はドロップゾーン側で作る） */
+.fileInput {
+  display: none;
+}
+
+/* ─── 処理状況（4段階） ─── */
+.jobSection {
+  margin-top: 14px;
+}
+
+/* ─── 最近のアップロード ─── */
+.recentSection {
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
+}
+
+.recentLabel {
+  font-size: var(--fs-card);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 7px;
+}
+
+/* 1件も登録がないときの案内。次に何をすればよいかを書く */
+.emptyText {
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.7;
+  padding: 2px 0;
+}
+
+.recentItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.recentItem:last-of-type {
+  border-bottom: none;
+}
+
+.recentPdfIcon {
+  color: var(--pdf-red);
+  flex-shrink: 0;
+  display: flex;
+}
+
+.recentInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.recentName {
+  display: block;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recentMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--tsub);
+  margin-top: 1px;
+}
+
+/* 登録状態のバッジ。何が起きているかを必ず見えるようにする（F-07） */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+.statusReady {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.statusProcessing {
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.statusError {
+  color: var(--danger);
+  background: #fef2f2;
+}
+
+/* スマホ：余白を詰める */
+@media (max-width: 640px) {
+  .cardBody {
+    padding: 12px 12px 14px;
+  }
+
+  .cardHeader {
+    padding: 12px;
+  }
+
+  .dropzone {
+    padding: 20px 12px;
+  }
+}

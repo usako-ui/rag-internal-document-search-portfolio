@@ -1,0 +1,179 @@
+/**
+ * アップロード処理状況の段階表示（TC-14・TC-15 / F-07）
+ * 「今どこまで進んでいるか」を一目で分かるようにするのが目的。
+ */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.heading {
+  font-size: var(--fs-card);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.job {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 11px;
+  background: var(--bgw);
+}
+
+.jobError {
+  border-color: var(--danger);
+  background: #fef2f2;
+}
+
+.jobHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.pdfIcon {
+  color: var(--pdf-red);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.jobName {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dismissButton {
+  border: none;
+  background: transparent;
+  color: var(--tsub);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.dismissButton:hover {
+  color: var(--navy);
+}
+
+.replaceNote {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-top: 3px;
+}
+
+/* ─── 現在の段階 ─── */
+.currentStage {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  color: var(--navy);
+  margin-top: 7px;
+}
+
+.stageIconRunning {
+  display: flex;
+  color: var(--green);
+  animation: spin 1.1s linear infinite;
+}
+
+.stageIconReady {
+  display: flex;
+  color: var(--green);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 動きを減らす設定の利用者には回転させない（アクセシビリティ） */
+@media (prefers-reduced-motion: reduce) {
+  .stageIconRunning {
+    animation: none;
+  }
+}
+
+/* ─── 進行バー ─── */
+.progressTrack {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--border);
+  overflow: hidden;
+  margin-top: 7px;
+}
+
+.progressBar,
+.progressBarReady {
+  height: 100%;
+  background: var(--green);
+  border-radius: 4px;
+  transition: width 0.35s ease;
+}
+
+.progressBarReady {
+  background: var(--green-h);
+}
+
+/* ─── 4段階のステップ表示 ─── */
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin-top: 8px;
+  list-style: none;
+}
+
+.step {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+/* 完了した段階 */
+.stepDone {
+  color: var(--green);
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+/* 実行中の段階 */
+.stepCurrent {
+  color: #fff;
+  border-color: var(--green);
+  background: var(--green);
+  font-weight: 700;
+}
+
+/* ─── エラー表示（原因＋次の行動） ─── */
+.errorBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: var(--fs-card);
+  color: var(--danger);
+  line-height: 1.6;
+}
+
+.errorIcon {
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 2px;
+}

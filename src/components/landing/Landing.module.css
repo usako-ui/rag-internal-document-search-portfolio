@@ -1,0 +1,826 @@
+/**
+ * ランディングページ（BYOKデモ STEP A / UI改善版）
+ *
+ * 未ログインの訪問者が最初に見る公開ページ。
+ * アプリ内は明るい背景だが、この画面だけダーク基調にする。
+ * 色は globals.css の `--lp-` トークンを使い、アプリ側のトークンは上書きしない。
+ *
+ * 【アニメーションについて】
+ * 装飾のアニメーションは prefers-reduced-motion で必ず無効化する。
+ * 動きに弱い利用者が読めない画面にしないため（ファイル末尾で一括指定）。
+ */
+
+.page {
+  background: var(--lp-bg);
+  color: var(--lp-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ────────────────────────────────
+   ナビゲーション（上部固定）
+   ──────────────────────────────── */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 48px;
+  /* 背面のコンテンツが透けても文字が読めるよう、ぼかしと下地を重ねる */
+  background: rgba(10, 22, 40, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--lp-border);
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.navLogoMark {
+  width: 30px;
+  height: 30px;
+  background: var(--green);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnGhost {
+  padding: 8px 18px;
+  border: 1px solid var(--lp-border);
+  background: transparent;
+  color: var(--lp-text-sub);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
+}
+
+.btnGhost:hover {
+  border-color: var(--green);
+  color: var(--lp-text);
+  background: var(--lp-green-dim);
+}
+
+.btnPrimary {
+  padding: 8px 20px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 0 20px var(--lp-green-glow);
+  transition:
+    opacity 0.2s,
+    box-shadow 0.2s;
+}
+
+.btnPrimary:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 32px var(--lp-green-glow);
+}
+
+/* ────────────────────────────────
+   ヒーロー
+   ──────────────────────────────── */
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* グリーンの放射状グラデーション（背景装飾） */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 50%, rgba(29, 186, 140, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 800px at 80% 20%, rgba(22, 43, 77, 0.6) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* 格子模様。中央から外側へフェードさせて主張を抑える */
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+}
+
+.heroInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.heroEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  text-transform: uppercase;
+  border: 1px solid var(--lp-green-line);
+  background: rgba(29, 186, 140, 0.08);
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+
+.eyebrowDot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+.heroTitle {
+  /* 画面幅に応じて滑らかに変える（折り返し位置が崩れにくい） */
+  font-size: clamp(36px, 4.5vw, 60px);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.heroTitleStrong {
+  font-weight: 700;
+}
+
+.heroTitleAccent {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.heroSub {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--lp-text-sub);
+  margin-bottom: 40px;
+  max-width: 480px;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btnHeroPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 0 32px var(--lp-green-glow);
+  transition:
+    opacity 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.btnHeroPrimary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 40px var(--lp-green-glow);
+}
+
+.btnHeroSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border: 1px solid var(--lp-border);
+  background: var(--lp-surface-soft);
+  color: var(--lp-text);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+
+.btnHeroSecondary:hover {
+  border-color: var(--lp-border-strong);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.heroStats {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--lp-border);
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.statNum {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: var(--lp-text-sub);
+  letter-spacing: 0.04em;
+}
+
+/* 数値の測定条件。根拠のない数字に見せないため必ず添える */
+.statsNote {
+  width: 100%;
+  font-size: 10.5px;
+  color: var(--lp-text-faint);
+  line-height: 1.7;
+  margin-top: 4px;
+}
+
+/* ────────────────────────────────
+   チャットプレビュー
+   ──────────────────────────────── */
+
+.chatPreview {
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-border);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.chatHeader {
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--lp-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatHeaderDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.chatHeaderTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lp-text-sub);
+  letter-spacing: 0.04em;
+}
+
+.chatHeaderBadge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green);
+  background: rgba(29, 186, 140, 0.12);
+  border: 1px solid rgba(29, 186, 140, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+}
+
+.chatMessages {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* 会話が切り替わっても高さが跳ねないよう下限を設ける */
+  min-height: 320px;
+}
+
+.msgUser {
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.msgUserBubble {
+  background: var(--green);
+  color: #fff;
+  border-radius: 12px 12px 2px 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 85%;
+}
+
+.msgAi {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.msgAiAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #fff;
+}
+
+.msgAiBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.msgAiBubble {
+  background: var(--lp-surface-soft);
+  border: 1px solid var(--lp-border);
+  border-radius: 2px 12px 12px 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.msgCitations {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.citationChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.typingCursor {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: var(--green);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.typingIndicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.typingDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+
+.typingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chatInputRow {
+  padding: 14px 16px;
+  border-top: 1px solid var(--lp-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.chatInputFake {
+  flex: 1;
+  font-size: 12px;
+  color: var(--lp-text-faint);
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--lp-border);
+  border-radius: 8px;
+}
+
+.chatSendBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+/* ────────────────────────────────
+   フィーチャー
+   ──────────────────────────────── */
+
+.features {
+  padding: 100px 48px;
+  position: relative;
+  /* 固定ナビの下に見出しが隠れないようにする（#features アンカー用） */
+  scroll-margin-top: 70px;
+}
+
+.featuresInner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 60px;
+  max-width: 560px;
+}
+
+.sectionTitleStrong {
+  font-weight: 700;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.featureCard {
+  background: var(--lp-surface-soft);
+  border: 1px solid var(--lp-border);
+  border-radius: 14px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+
+/* hoverで上辺にグリーンの線を走らせる */
+.featureCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.featureCard:hover {
+  border-color: var(--lp-green-line);
+  background: rgba(29, 186, 140, 0.05);
+  transform: translateY(-3px);
+}
+
+.featureCard:hover::before {
+  opacity: 1;
+}
+
+.featureIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--lp-green-dim);
+  border: 1px solid rgba(29, 186, 140, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--green);
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.featureDesc {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--lp-text-sub);
+}
+
+.featureMeta {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--lp-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--green);
+  letter-spacing: 0.04em;
+  /* 英数字の技術メモが狭い画面でも溢れないようにする */
+  overflow-wrap: anywhere;
+}
+
+/* ────────────────────────────────
+   CTA
+   ──────────────────────────────── */
+
+.ctaSection {
+  padding: 80px 48px 120px;
+  text-align: center;
+  position: relative;
+}
+
+.ctaInner {
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(29, 186, 140, 0.06);
+  border: 1px solid rgba(29, 186, 140, 0.2);
+  border-radius: 20px;
+  padding: 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaInner::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(29, 186, 140, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.ctaTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.ctaSub {
+  font-size: 14px;
+  color: var(--lp-text-sub);
+  margin-bottom: 32px;
+  line-height: 1.7;
+  position: relative;
+}
+
+.ctaActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* ────────────────────────────────
+   フッター
+   ──────────────────────────────── */
+
+.footer {
+  padding: 24px 48px;
+  border-top: 1px solid var(--lp-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footerCopy {
+  font-size: 12px;
+  color: var(--lp-text-faint);
+}
+
+.footerTech {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.techTag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border: 1px solid var(--lp-border);
+  border-radius: 4px;
+}
+
+/* ────────────────────────────────
+   レスポンシブ
+   ──────────────────────────────── */
+
+@media (max-width: 900px) {
+  .nav {
+    padding: 14px 24px;
+  }
+
+  /* 狭い画面ではナビのラベルを減らして折り返しを防ぐ */
+  .navFeatureLink {
+    display: none;
+  }
+
+  .hero {
+    padding: 100px 24px 60px;
+  }
+
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .chatPreview {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .features {
+    padding: 60px 24px;
+  }
+
+  .sectionTitle {
+    margin-bottom: 36px;
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaSection {
+    padding: 60px 24px;
+  }
+
+  .ctaInner {
+    padding: 40px 24px;
+  }
+
+  .footer {
+    padding: 20px 24px;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroStats {
+    gap: 20px;
+  }
+
+  .btnHeroPrimary,
+  .btnHeroSecondary {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+/* 動きに弱い利用者のためにアニメーションを止める（装飾のため無くても内容は伝わる） */
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,97 @@
+/**
+ * 質問入力バー（画面下部固定・TC-07）
+ *
+ * UX優先順位1位「質問しやすい」の中心となる要素のため、
+ * 常に画面下部へ固定し、スクロールで見失わないようにする。
+ */
+
+.wrap {
+  padding: 12px 20px 16px;
+  background: var(--bgw);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  padding: 8px 10px;
+  background: var(--bgp);
+  transition: border-color 0.18s;
+}
+
+.row:focus-within {
+  border-color: var(--green);
+}
+
+/* 送信できない状態であることを見た目でも伝える */
+.rowDisabled {
+  opacity: 0.6;
+}
+
+.clipButton {
+  border: none;
+  background: transparent;
+  color: var(--tsub);
+  border-radius: 5px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.13s;
+}
+
+.clipButton:hover:not(:disabled) {
+  color: var(--navy);
+}
+
+.input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: var(--fs-base);
+  color: var(--tbody);
+  outline: none;
+  resize: none;
+  min-height: 20px;
+  max-height: 100px;
+  line-height: 1.5;
+  overflow-y: auto;
+}
+
+.input::placeholder {
+  color: var(--tsub);
+}
+
+.sendButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--green);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.sendButton:hover:not(:disabled) {
+  background: var(--green-h);
+}
+
+.sendButton:disabled {
+  background: var(--border);
+  color: var(--tsub);
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    padding: 10px 14px 14px;
+  }
+}

@@ -1,0 +1,244 @@
+/**
+ * 設定画面（TE-10）
+ *
+ * 項目ごとにカードで区切り、「何を変えると何が変わるか」を必ず添える。
+ * 説明のない設定項目は、利用者が変更をためらう・誤って変えるため。
+ */
+
+.wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 16px 32px;
+}
+
+.inner {
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card {
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.cardTitle {
+  font-size: var(--fs-card);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.cardHint {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-top: 3px;
+  line-height: 1.6;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 11px;
+}
+
+/* 選択肢はボタン型にする。ラジオより押しやすく、選択状態も分かりやすい */
+.option {
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  color: var(--tbody);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 92px;
+  transition:
+    border-color 0.13s,
+    background 0.13s,
+    color 0.13s;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--tsub);
+  background: var(--bgp);
+}
+
+/* 選択中は色だけでなく枠線の太さでも示す（色覚特性に依存しないため） */
+.optionActive {
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+  background: rgba(29, 186, 140, 0.08);
+  color: var(--navy);
+}
+
+.optionActive:hover:not(:disabled) {
+  background: rgba(29, 186, 140, 0.12);
+  border-color: var(--green);
+}
+
+.option:disabled {
+  opacity: 0.6;
+}
+
+.optionHint {
+  font-size: var(--fs-sub);
+  font-weight: 500;
+  color: var(--tsub);
+}
+
+.optionActive .optionHint {
+  color: var(--green-h);
+}
+
+/* 読み取り専用の情報行（メールアドレス） */
+.readonlyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  background: var(--bgp);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.readonlyValue {
+  font-size: var(--fs-base);
+  color: var(--tbody);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.readonlyBadge {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  flex-shrink: 0;
+}
+
+/* 保存バー */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.saveButton {
+  border: none;
+  background: var(--green);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: var(--fs-card);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--green-h);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+}
+
+.status {
+  font-size: var(--fs-card);
+  font-weight: 600;
+}
+
+.statusSuccess {
+  color: var(--green-h);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statusError {
+  color: #b91c1c;
+}
+
+/* ログアウト。誤操作を避けるため他の操作と離し、枠線のみの控えめな見た目にする */
+.logoutCard {
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logoutButton {
+  border: 1px solid #fca5a5;
+  background: var(--bgw);
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: var(--fs-card);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition:
+    background 0.13s,
+    border-color 0.13s;
+}
+
+.logoutButton:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #f87171;
+}
+
+.logoutButton:disabled {
+  opacity: 0.6;
+}
+
+.state {
+  padding: 28px 20px;
+  text-align: center;
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.8;
+}
+
+.stateError {
+  color: #b91c1c;
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    padding: 14px 12px 28px;
+  }
+
+  .card,
+  .logoutCard {
+    padding: 14px 15px;
+  }
+
+  .option {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+  }
+
+  .saveButton,
+  .logoutButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

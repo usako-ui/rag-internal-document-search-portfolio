@@ -1,0 +1,184 @@
+/**
+ * 出典モーダル（TE-06）
+ *
+ * UX優先順位4位「AI回答の根拠を確認しやすい」に対応する。
+ * 回答のどの記述が、どの文書のどこに書かれているのかを原文で確認できるようにする。
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 30, 58, 0.45);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.dialog {
+  background: var(--bgw);
+  border-radius: 12px;
+  width: min(560px, 100%);
+  max-height: min(80vh, 640px);
+  box-shadow: 0 18px 48px rgba(15, 30, 58, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 15px 16px 11px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.headerIcon {
+  color: var(--green);
+  display: flex;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--navy);
+  /* 文書名が長くても折り返して全体を見せる（根拠の確認が目的のため省略しない） */
+  overflow-wrap: anywhere;
+}
+
+.subtitle {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-top: 3px;
+}
+
+.closeButton {
+  border: none;
+  background: transparent;
+  color: var(--tsub);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  transition: color 0.13s;
+}
+
+.closeButton:hover {
+  color: var(--navy);
+}
+
+/* 本文は長くなるためモーダル内でスクロールさせる（ページ全体は動かさない） */
+.body {
+  padding: 14px 16px 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.sectionLabel {
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  color: var(--tsub);
+  margin-bottom: 6px;
+}
+
+/* 原文であることが分かるよう、回答本文とは異なる見た目にする */
+.content {
+  background: var(--bgp);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: var(--fs-base);
+  color: var(--tbody);
+  line-height: 1.9;
+  /* 抽出テキストの改行をそのまま活かす */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* 該当箇所テキストが取得できない場合（古い履歴など）の案内 */
+.empty {
+  background: var(--bgp);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.7;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bgp);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+}
+
+.metaValue {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.footer {
+  padding: 0 16px 16px;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.closeAction {
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  color: var(--navy);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  transition:
+    border-color 0.13s,
+    background 0.13s;
+}
+
+.closeAction:hover {
+  border-color: var(--tsub);
+  background: var(--bgp);
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .dialog {
+    max-height: 88vh;
+  }
+
+  .closeAction {
+    width: 100%;
+    padding: 11px 16px;
+  }
+}

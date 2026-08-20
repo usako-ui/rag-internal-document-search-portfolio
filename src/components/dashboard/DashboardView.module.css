@@ -1,0 +1,330 @@
+/**
+ * ダッシュボード（`/dashboard`）
+ *
+ * PC：クイックアクション4列 → 中段2カラム → 精度サマリー
+ * タブレット：クイックアクション2列 → 中段2カラム
+ * スマホ：すべて1カラム
+ */
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── 上部：クイックアクション ─── */
+.quickSection {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quickCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 14px;
+  transition:
+    border-color 0.13s,
+    box-shadow 0.13s,
+    transform 0.13s;
+}
+
+.quickCard:hover {
+  border-color: var(--green);
+  box-shadow: 0 4px 14px rgba(15, 30, 58, 0.07);
+  transform: translateY(-1px);
+}
+
+.quickIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--green-soft);
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.quickText {
+  flex: 1;
+  min-width: 0;
+}
+
+.quickTitle {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quickSub {
+  display: block;
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quickChevron {
+  color: var(--tsub);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.quickCard:hover .quickChevron {
+  color: var(--green);
+}
+
+/* ─── 中段：2カラム ─── */
+.middleRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ─── カード共通 ─── */
+.card {
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bgp);
+}
+
+.cardIcon {
+  color: var(--green);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.cardLink:hover {
+  color: var(--green-h);
+  text-decoration: underline;
+}
+
+.cardBody {
+  padding: 12px 16px 14px;
+}
+
+.mutedText {
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.7;
+  padding: 4px 0;
+}
+
+.errorText {
+  font-size: var(--fs-card);
+  color: var(--danger);
+  line-height: 1.7;
+  padding: 4px 0;
+}
+
+/* ─── 最近の質問履歴 ─── */
+.historyItem {
+  display: block;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.historyItem:last-child {
+  border-bottom: none;
+}
+
+.historyItem:hover .historyQuestion {
+  color: var(--green);
+}
+
+.historyQuestion {
+  /* 長い質問は2行までにして、5件が同じ高さ感で並ぶようにする */
+  display: -webkit-box;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.6;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.13s;
+}
+
+.historyTime {
+  display: block;
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  margin-top: 2px;
+}
+
+/* ─── 文書の状態サマリー ─── */
+.statusList {
+  list-style: none;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.statusRow:last-child {
+  border-bottom: none;
+}
+
+.statusIcon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.statusReady {
+  color: var(--green);
+}
+
+.statusProcessing {
+  color: #b45309;
+}
+
+.statusError {
+  color: var(--danger);
+}
+
+.statusLabel {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-card);
+  color: var(--tbody);
+}
+
+.statusCount {
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.statusNote {
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: var(--bgp);
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.7;
+}
+
+/* ─── 精度サマリー ─── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bgp);
+}
+
+.statValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: var(--fs-card);
+  color: var(--tsub);
+}
+
+.statsNote {
+  margin-top: 11px;
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  line-height: 1.7;
+}
+
+/* ────────────────────────────────
+   タブレット（≤1024px）
+──────────────────────────────── */
+@media (max-width: 1024px) {
+  .quickSection {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ────────────────────────────────
+   スマホ（≤740px）：すべて1カラム
+──────────────────────────────── */
+@media (max-width: 740px) {
+  .body {
+    padding: 14px;
+  }
+
+  .quickSection {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .middleRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

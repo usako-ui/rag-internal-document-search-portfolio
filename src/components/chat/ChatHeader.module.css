@@ -1,0 +1,102 @@
+/** チャットヘッダー（TC-03） */
+
+.header {
+  padding: 14px 20px;
+  background: var(--bgw);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.sub {
+  font-size: 11.5px;
+  color: var(--tsub);
+  margin-top: 1px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  color: var(--navy);
+  border-radius: 8px;
+  padding: 6px 11px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  transition:
+    border-color 0.13s,
+    background 0.13s;
+  white-space: nowrap;
+}
+
+.filterButton:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.iconButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tsub);
+  transition:
+    border-color 0.13s,
+    color 0.13s;
+}
+
+.iconButton:hover {
+  border-color: var(--green);
+  color: var(--navy);
+}
+
+/* タブレット以下ではサブテキストを省いて横幅を確保する */
+@media (max-width: 1024px) {
+  .sub {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 10px 14px;
+  }
+
+  /* スマホではラベルを省きアイコンのみにする（横幅が足りないため） */
+  .filterButtonLabel {
+    display: none;
+  }
+
+  .filterButton {
+    padding: 6px 8px;
+  }
+}

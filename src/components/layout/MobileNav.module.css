@@ -1,0 +1,52 @@
+/**
+ * ボトムナビゲーション（≤640pxのみ表示・下部固定）
+ *
+ * 5タブ固定。サイドバーと同じ構成にそろえる。
+ * 低頻度操作（設定）はここに詰め込まず、ハンバーガーメニュー側へまとめる。
+ */
+
+.nav {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .nav {
+    display: block;
+    background: var(--navy);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  .inner {
+    display: flex;
+    justify-content: space-around;
+    padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    color: rgba(255, 255, 255, 0.45);
+    background: none;
+    border: none;
+    border-radius: 7px;
+    transition: color 0.13s;
+    /* タップ領域を確保する（44px未満は押しにくい） */
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .item.active {
+    color: var(--green);
+  }
+
+  .label {
+    font-size: 9.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}

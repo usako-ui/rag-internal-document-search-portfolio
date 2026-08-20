@@ -1,0 +1,175 @@
+/**
+ * デモ用APIキー入力画面（BYOKデモ STEP B）
+ *
+ * 他人のAPIキーを預かる画面のため、
+ * 「どこに保存されるか」「サーバーへ送られないか」を最初に読ませる構成にしている。
+ */
+
+.page {
+  min-height: 100vh;
+  background: var(--bgp);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.card {
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: min(520px, 100%);
+  padding: 30px 32px 28px;
+  box-shadow: 0 12px 36px rgba(15, 30, 58, 0.08);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(29, 186, 140, 0.12);
+  color: var(--green-h);
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: var(--fs-sub);
+  font-weight: 700;
+}
+
+.title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 12px;
+}
+
+.lead {
+  font-size: var(--fs-base);
+  color: var(--tbody);
+  line-height: 1.85;
+  margin-top: 10px;
+}
+
+/* キーの取り扱いは目立たせる。読み飛ばされると信頼を損なう */
+.notice {
+  margin-top: 14px;
+  background: var(--bgp);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: var(--fs-card);
+  color: var(--tbody);
+  line-height: 1.8;
+}
+
+.noticeList {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  font-size: var(--fs-card);
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 14px;
+}
+
+.link:hover {
+  color: var(--green-h);
+  text-decoration: underline;
+}
+
+.field {
+  margin-top: 18px;
+}
+
+.label {
+  display: block;
+  font-size: var(--fs-card);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px 12px;
+  font-size: var(--fs-base);
+  color: var(--tbody);
+  background: var(--bgw);
+  font-family: inherit;
+  transition: border-color 0.13s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(29, 186, 140, 0.14);
+}
+
+.inputError {
+  border-color: #f87171;
+}
+
+.error {
+  margin-top: 8px;
+  font-size: var(--fs-card);
+  color: #b91c1c;
+  line-height: 1.7;
+}
+
+.submitButton {
+  width: 100%;
+  margin-top: 18px;
+  border: none;
+  background: var(--green);
+  color: #fff;
+  border-radius: 10px;
+  padding: 13px 20px;
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: background 0.15s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--green-h);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 16px;
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--navy);
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 14px;
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+}

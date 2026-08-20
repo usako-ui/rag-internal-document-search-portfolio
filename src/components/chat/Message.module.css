@@ -1,0 +1,339 @@
+/**
+ * 吹き出し（ユーザー／AI／エラー）のスタイル
+ *
+ * AI回答の表示順序はCLAUDE.md セクション10で厳守と定められている：
+ *   1. 回答本文 → 2. 根拠・出典 → 3. 関連文書カード → 4. フィードバック
+ * 順序はJSX側で保証しているため、CSSのorderプロパティで並べ替えないこと。
+ */
+
+/* ────────────────────────────────
+   ユーザー吹き出し
+──────────────────────────────── */
+.userRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.userWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 65%;
+}
+
+.userBubble {
+  background: var(--navy);
+  color: #fff;
+  border-radius: 14px 14px 2px 14px;
+  padding: 9px 14px;
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.time {
+  font-size: 10px;
+  color: var(--tsub);
+  margin-top: 4px;
+}
+
+/* ────────────────────────────────
+   AI吹き出し
+──────────────────────────────── */
+.aiRow {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+
+.aiAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.aiBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.aiBubble {
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 2px 14px 14px 14px;
+  padding: 12px 14px;
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  color: var(--tbody);
+  box-shadow: 0 1px 8px rgba(15, 30, 58, 0.06);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 該当情報なしの回答。推測で答えているように見せないため、色や装飾で目立たせない */
+.aiBubbleNotFound {
+  color: var(--tsub);
+}
+
+/* ────────────────────────────────
+   2. 根拠・出典
+──────────────────────────────── */
+.citations {
+  margin-top: 9px;
+}
+
+.citationsLabel {
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  color: var(--tsub);
+  margin-bottom: 4px;
+}
+
+.citationLink {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  font-size: var(--fs-card);
+  font-weight: 600;
+  padding: 2px 0;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.citationLink:hover {
+  text-decoration: underline;
+}
+
+/* ────────────────────────────────
+   3. 関連文書カード
+──────────────────────────────── */
+.docCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.docCard {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 11px;
+  transition:
+    border-color 0.13s,
+    background 0.13s;
+  text-align: left;
+}
+
+.docCard:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.docPdfIcon {
+  color: var(--pdf-red);
+  flex-shrink: 0;
+  display: flex;
+}
+
+.docName {
+  display: block;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--navy);
+}
+
+.docRef {
+  display: block;
+  font-size: 10px;
+  color: var(--tsub);
+}
+
+/* ────────────────────────────────
+   4. フィードバック
+──────────────────────────────── */
+.feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 9px;
+  gap: 8px;
+}
+
+.feedbackRow {
+  display: flex;
+  gap: 5px;
+}
+
+.feedbackButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--tsub);
+  transition:
+    border-color 0.13s,
+    color 0.13s;
+  white-space: nowrap;
+}
+
+.feedbackButton:hover {
+  border-color: var(--green);
+  color: var(--navy);
+}
+
+.feedbackButtonActive {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.bookmarkButton {
+  border: none;
+  background: transparent;
+  color: var(--tsub);
+  border-radius: 6px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  transition: color 0.13s;
+  flex-shrink: 0;
+}
+
+.bookmarkButton:hover {
+  color: var(--navy);
+}
+
+.bookmarkButtonActive {
+  color: var(--green);
+}
+
+/* ────────────────────────────────
+   エラー表示（原因＋次の行動を示す）
+──────────────────────────────── */
+.errorRow {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+
+.errorBubble {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--bgw);
+  border: 1px solid var(--danger);
+  border-radius: 2px 14px 14px 14px;
+  padding: 12px 14px;
+  font-size: var(--fs-base);
+  line-height: 1.65;
+  color: var(--tbody);
+}
+
+.errorIcon {
+  color: var(--danger);
+  flex-shrink: 0;
+  display: flex;
+  margin-top: 2px;
+}
+
+.errorBody {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 次に取るべき行動（TC-12）。文言だけで終わらせず操作を用意する */
+.retryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 9px;
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  color: var(--navy);
+  border-radius: 7px;
+  padding: 6px 11px;
+  font-size: var(--fs-card);
+  font-weight: 600;
+  transition:
+    border-color 0.13s,
+    background 0.13s;
+}
+
+.retryButton:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+/* ────────────────────────────────
+   ローディング（回答生成中）
+──────────────────────────────── */
+.loadingBubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bgw);
+  border: 1px solid var(--border);
+  border-radius: 2px 14px 14px 14px;
+  padding: 12px 14px;
+  font-size: var(--fs-card);
+  color: var(--tsub);
+}
+
+.spinner {
+  display: flex;
+  color: var(--green);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 動きを減らす設定の利用者にはスピナーを回さない（アクセシビリティ） */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+/* ────────────────────────────────
+   スマホ
+──────────────────────────────── */
+@media (max-width: 640px) {
+  .userWrap {
+    max-width: 85%;
+  }
+
+  /* 横幅が狭いため関連文書カードは縦積みにする */
+  .docCards {
+    flex-direction: column;
+  }
+
+  .feedback {
+    flex-wrap: wrap;
+  }
+}

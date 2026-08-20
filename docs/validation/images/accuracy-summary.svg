@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="320" viewBox="0 0 800 320" role="img" aria-label="RAG精度検証結果サマリー">
+  <rect width="800" height="320" fill="#FFFFFF"/>
+  <text x="24" y="36" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="16" font-weight="700" fill="#1F2937">RAG精度検証結果サマリー</text>
+  <rect x="24" y="62" width="176" height="172" rx="8" fill="#F0FDF9" stroke="#1DBA8C" stroke-width="1"/>
+  <g transform="translate(100 80)" fill="none" stroke="#1DBA8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></g>
+  <text x="112" y="128" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="13" font-weight="700" fill="#1F2937">検索精度</text>
+  <text x="112" y="170" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="36" font-weight="700" fill="#0F1E3A">100%</text>
+  <text x="112" y="192" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="12" fill="#6B7280">10問中10問</text>
+  <rect x="216" y="62" width="176" height="172" rx="8" fill="#F0FDF9" stroke="#1DBA8C" stroke-width="1"/>
+  <g transform="translate(292 80)" fill="none" stroke="#1DBA8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></g>
+  <text x="304" y="128" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="13" font-weight="700" fill="#1F2937">回答精度</text>
+  <text x="304" y="170" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="36" font-weight="700" fill="#0F1E3A">100%</text>
+  <text x="304" y="192" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="12" fill="#6B7280">10問中10問</text>
+  <rect x="260" y="202" width="88" height="22" rx="11" fill="#1DBA8C"/>
+  <text x="304" y="217" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF">目標80%達成</text>
+  <rect x="408" y="62" width="176" height="172" rx="8" fill="#F0FDF9" stroke="#1DBA8C" stroke-width="1"/>
+  <g transform="translate(484 80)" fill="none" stroke="#1DBA8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></g>
+  <text x="496" y="128" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="13" font-weight="700" fill="#1F2937">出典表示</text>
+  <text x="496" y="170" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="36" font-weight="700" fill="#0F1E3A">100%</text>
+  <text x="496" y="192" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="12" fill="#6B7280">12問中12問</text>
+  <rect x="600" y="62" width="176" height="172" rx="8" fill="#F0FDF9" stroke="#1DBA8C" stroke-width="1"/>
+  <g transform="translate(676 80)" fill="none" stroke="#1DBA8C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></g>
+  <text x="688" y="128" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="13" font-weight="700" fill="#1F2937">ハルシネーション</text>
+  <text x="688" y="170" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="36" font-weight="700" fill="#0F1E3A">0件</text>
+  <text x="688" y="192" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="12" fill="#6B7280">12問すべて抑制</text>
+  <text x="24" y="266" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="11" font-style="italic" fill="#6B7280">※ この結果は5文書・12問での検証値です。</text>
+  <text x="24" y="284" font-family="'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif" font-size="11" font-style="italic" fill="#6B7280">　 全社内文書・全質問への精度を保証するものではありません。</text>
+</svg>

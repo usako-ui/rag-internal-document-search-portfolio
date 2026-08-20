@@ -1,0 +1,135 @@
+/**
+ * グローバルスタイル
+ *
+ * 役割：
+ *  - デザイントークン（カラー・レイアウト幅・フォント）をCSSカスタムプロパティで一元管理する
+ *  - 全画面共通のリセットと基本タイポグラフィを定義する
+ *
+ * 個別コンポーネントのスタイルは各 *.module.css に置くこと。
+ * 色を直接16進数で書かず、必ずここで定義したトークンを参照すること
+ * （色の変更が1箇所で完結せず、画面ごとに色がずれる原因になるため）。
+ */
+
+/* ────────────────────────────────
+   リセット
+──────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ────────────────────────────────
+   デザイントークン（CLAUDE.md セクション10で確定）
+──────────────────────────────── */
+:root {
+  /* カラー */
+  --navy: #0f1e3a; /* サイドバー背景・ユーザー吹き出し */
+  --navy2: #162b4d; /* サブ背景 */
+  --green: #1dba8c; /* CTAボタン・出典リンク・アクティブ */
+  --green-h: #17a87d; /* グリーンhover */
+  --border: #e2e8f0; /* 枠線・区切り線 */
+  --tsub: #6b7280; /* 補助テキスト */
+  --tbody: #1f2937; /* 本文テキスト */
+  --bgp: #f8fafc; /* ページ背景 */
+  --bgw: #ffffff; /* カード・パネル背景 */
+
+  /* 派生カラー（上記トークンから導出する用途別の色） */
+  --green-soft: #f0fdf9; /* グリーン系hoverの薄い背景 */
+  --pdf-red: #dc2626; /* PDFアイコン */
+  --danger: #dc2626; /* エラー表示 */
+  --dropzone-border: #cbd5e1; /* ドロップゾーンの破線 */
+
+  /* サイドバー内の白系（ネイビー背景の上で使う） */
+  --on-navy: rgba(255, 255, 255, 0.9);
+  --on-navy-mid: rgba(255, 255, 255, 0.65);
+  --on-navy-sub: rgba(255, 255, 255, 0.38);
+  --on-navy-line: rgba(255, 255, 255, 0.08);
+
+  /* レイアウト幅 */
+  --sw: 240px; /* サイドバー幅（PC） */
+  --uw: 296px; /* アップロードパネル幅（PC） */
+
+  /* タイポグラフィ */
+  --font: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+  --fs-base: 13px; /* 本文 */
+  --fs-heading: 15px; /* 見出し */
+  --fs-card: 12px; /* カード */
+  --fs-sub: 10.5px; /* 補助テキスト */
+
+  /* ────────────────────────────────
+     ランディングページ（`/`）専用のダーク系トークン
+
+     アプリ内（チャット・文書一覧など）は明るい背景を基調とするが、
+     未ログインの訪問者が最初に見るランディングだけはダーク基調にする。
+     アプリ側のトークンを上書きすると全画面に影響するため、
+     用途が分かる `--lp-` 接頭辞で分けている。
+     ──────────────────────────────── */
+  --lp-bg: #0a1628; /* ページ背景（--navy よりさらに濃い） */
+  --lp-surface: rgba(15, 30, 58, 0.8); /* カード背景（--navy の半透明） */
+  --lp-surface-soft: rgba(255, 255, 255, 0.06); /* 面の一段明るい背景 */
+  --lp-border: rgba(255, 255, 255, 0.1); /* 枠線・区切り線 */
+  --lp-border-strong: rgba(255, 255, 255, 0.25); /* hover時の枠線 */
+  --lp-text: #ffffff; /* 見出し・本文 */
+  --lp-text-sub: rgba(255, 255, 255, 0.6); /* 補助テキスト */
+  --lp-text-faint: rgba(255, 255, 255, 0.3); /* フッター等の最も薄い文字 */
+  --lp-green-dim: rgba(29, 186, 140, 0.15); /* グリーンの薄い面 */
+  --lp-green-line: rgba(29, 186, 140, 0.3); /* グリーンの枠線 */
+  --lp-green-glow: rgba(29, 186, 140, 0.35); /* CTAのグロー */
+
+  /* 技術メモ・数値の表示に使う等幅フォント */
+  --font-mono: 'SF Mono', 'Fira Code', Consolas, monospace;
+}
+
+/* ────────────────────────────────
+   ベース
+──────────────────────────────── */
+html,
+body {
+  height: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font);
+  background: var(--bgp);
+  color: var(--tbody);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+textarea,
+input {
+  font-family: var(--font);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* キーボード操作時のフォーカスを必ず見えるようにする（非機能要件3-5：アクセシビリティ） */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* 読み上げ専用テキスト（視覚的には隠すがスクリーンリーダーには読ませる） */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

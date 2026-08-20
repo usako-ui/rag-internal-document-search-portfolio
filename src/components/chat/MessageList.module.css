@@ -1,0 +1,99 @@
+/** メッセージ一覧（スクロール領域） */
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+/* ────────────────────────────────
+   会話が空のときの表示（TC-10）
+   実際の回答がない状態でサンプル会話を見せないための代替表示。
+──────────────────────────────── */
+.empty {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.emptyIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--green);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.emptyTitle {
+  font-size: var(--fs-heading);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.emptyText {
+  font-size: var(--fs-card);
+  color: var(--tsub);
+  line-height: 1.8;
+  margin-top: 7px;
+  max-width: 440px;
+}
+
+.exampleLabel {
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  color: var(--tsub);
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* 押すとそのまま送信できる質問例（UX優先順位1位「質問しやすい」） */
+.exampleButton {
+  border: 1px solid var(--border);
+  background: var(--bgw);
+  color: var(--tbody);
+  border-radius: 9px;
+  padding: 10px 13px;
+  font-size: var(--fs-card);
+  text-align: left;
+  transition:
+    border-color 0.13s,
+    background 0.13s;
+}
+
+.exampleButton:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+@media (max-width: 640px) {
+  .messages {
+    padding: 14px;
+  }
+}

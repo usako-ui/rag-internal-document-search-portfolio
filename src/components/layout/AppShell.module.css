@@ -1,0 +1,54 @@
+/**
+ * アプリ全体のレイアウト
+ *
+ * PC（>1024px）    ：3カラム（サイドバー240px / チャット flex:1 / アップロードパネル296px）
+ * タブレット（≤1024px）：2カラム（サイドバー80px / チャット）※アップロードパネルはドロワー化
+ * スマホ（≤640px）  ：1カラム（モバイルヘッダー / チャット / ボトムナビ）
+ */
+
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chatColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* 免責テキスト（入力バーの直上に固定） */
+.disclaimer {
+  font-size: var(--fs-sub);
+  color: var(--tsub);
+  text-align: center;
+  padding: 6px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--bgw);
+  flex-shrink: 0;
+}
+
+/* スマホでは縦積み（ヘッダー → チャット → ボトムナビ） */
+@media (max-width: 640px) {
+  .app {
+    flex-direction: column;
+  }
+}

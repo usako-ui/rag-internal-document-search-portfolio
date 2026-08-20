@@ -1,0 +1,420 @@
+/**
+ * サイドバー（PC 240px / タブレット 80px）
+ *
+ * UX優先順位に従い、「新しい質問」「PDFアップロード」「資料更新」を
+ * 最上位の"最優先ゾーン"に置き、視覚的に強調している。
+ * これらをメニューの奥に隠してはいけない（CLAUDE.md セクション10）。
+ */
+
+.sidebar {
+  width: var(--sw);
+  min-width: var(--sw);
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+/* ─── ロゴ ─── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--on-navy-line);
+  flex-shrink: 0;
+}
+
+.logoIcon {
+  width: 34px;
+  height: 34px;
+  background: var(--green);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.logoText {
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* ─── 最優先ゾーン：新しい質問ボタン ─── */
+.newButton {
+  margin: 12px 12px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  width: calc(100% - 24px);
+  transition: background 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.newButton:hover {
+  background: var(--green-h);
+}
+
+.newButtonText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── セクションラベル ─── */
+.sectionLabel {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  padding: 12px 16px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ─── ナビゲーション ─── */
+.nav {
+  padding: 0 8px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.nav::-webkit-scrollbar {
+  width: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--on-navy-mid);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition:
+    background 0.13s,
+    color 0.13s;
+  margin-bottom: 1px;
+  min-height: 40px;
+  overflow: hidden;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.item.active {
+  background: rgba(29, 186, 140, 0.18);
+  color: #fff;
+}
+
+.itemIcon {
+  color: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  display: flex;
+}
+
+.item.active .itemIcon {
+  color: var(--green);
+}
+
+.itemText {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.itemName {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* サブテキスト（「ドラッグ＆ドロップで追加」など操作の補足） */
+.itemSub {
+  display: block;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  margin-top: 1px;
+}
+
+.item.active .itemSub {
+  color: rgba(29, 186, 140, 0.7);
+}
+
+/* タブレット時のみ表示する短縮ラベル */
+.itemTabletLabel {
+  display: none;
+}
+
+.divider {
+  height: 1px;
+  background: var(--on-navy-line);
+  margin: 8px 16px;
+}
+
+/* ─── ユーザーフッター ─── */
+.user {
+  padding: 12px 14px;
+  border-top: 1px solid var(--on-navy-line);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  width: 100%;
+  text-align: left;
+}
+
+.user:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--navy2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--on-navy);
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--on-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  display: block;
+  font-size: 10px;
+  color: var(--on-navy-sub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ログアウト（TC-19）。押し間違いを避けるため他の操作と離して右端に置く */
+.logoutButton {
+  color: var(--on-navy-mid);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--on-navy-line);
+  border-radius: 7px;
+  background: transparent;
+  transition:
+    color 0.13s,
+    border-color 0.13s;
+}
+
+.logoutButton:hover:not(:disabled) {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.logoutButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ────────────────────────────────
+   タブレット（≤1024px）：80px・アイコン＋短ラベル縦並び
+──────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 80px;
+    min-width: 80px;
+  }
+
+  .logoText,
+  .newButtonText,
+  .itemText,
+  .sectionLabel,
+  .divider,
+  .userInfo {
+    display: none;
+  }
+
+  .logo {
+    justify-content: center;
+    padding: 16px 0;
+  }
+
+  .newButton {
+    justify-content: center;
+    padding: 10px;
+    width: calc(100% - 16px);
+    margin: 10px 8px 4px;
+  }
+
+  .item {
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+    padding: 9px 4px;
+    min-height: 52px;
+  }
+
+  .itemIcon {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .item.active .itemIcon {
+    color: var(--green);
+  }
+
+  /* ラベルが不明瞭にならないよう、タブレットでも短縮テキストを併記する */
+  .itemTabletLabel {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .item.active .itemTabletLabel {
+    color: #fff;
+  }
+
+  /* 80px幅ではメール表示を省き、アバターとログアウトのみを縦に並べる */
+  .user {
+    flex-direction: column;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 0;
+  }
+}
+
+/* ────────────────────────────────
+   スマホ（≤640px）
+   常設サイドバーは非表示にし、主要操作はボトムナビへ移す。
+   低頻度操作（質問履歴・お気に入り・管理系）はハンバーガーから
+   ドロワーとして開けるようにする（仕様：5項目を超えるナビを詰め込まない）。
+──────────────────────────────── */
+@media (max-width: 640px) {
+  .sidebar {
+    display: none;
+  }
+
+  .drawerOpen {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(260px, 80vw);
+    min-width: 0;
+    z-index: 60;
+    box-shadow: 8px 0 24px rgba(15, 30, 58, 0.24);
+  }
+
+  /* ドロワーではPCと同じくラベルを全表示する（幅に余裕があるため） */
+  .drawerOpen .logoText,
+  .drawerOpen .newButtonText,
+  .drawerOpen .itemText,
+  .drawerOpen .sectionLabel,
+  .drawerOpen .divider,
+  .drawerOpen .userInfo,
+  .drawerOpen .userChevron {
+    display: block;
+  }
+
+  .drawerOpen .itemTabletLabel {
+    display: none;
+  }
+
+  .drawerOpen .logo {
+    justify-content: flex-start;
+    padding: 18px 16px 14px;
+  }
+
+  .drawerOpen .newButton {
+    justify-content: center;
+    padding: 10px 14px;
+    width: calc(100% - 24px);
+    margin: 12px 12px 4px;
+  }
+
+  .drawerOpen .item {
+    flex-direction: row;
+    gap: 9px;
+    justify-content: flex-start;
+    padding: 8px 10px;
+    min-height: 40px;
+  }
+
+  .drawerOpen .user {
+    justify-content: flex-start;
+    padding: 12px 14px;
+  }
+}
+
+/* ドロワーの背面オーバーレイ */
+.overlay {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .overlayVisible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 30, 58, 0.4);
+    z-index: 55;
+    border: none;
+  }
+}
