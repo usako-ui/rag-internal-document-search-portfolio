@@ -37,8 +37,7 @@ const REGISTER_PATH = '/register';
  *
  * - ログイン画面・認証コールバック … 塞ぐとログインできなくなるため
  * - `/register`（アカウント登録）  … 未ログインの人が自分で登録するための画面のため
- * - `/api/auth` 配下              … ログインAPI・登録APIは未ログインで呼べる必要があるため
- *                                   （`/api/auth/login`・`/api/auth/register` はこの前方一致で公開される）
+ * - `/api/auth/login`・`/api/auth/register` … 未ログインで呼べる必要があるため
  * - `/`（ランディングページ）      … 未ログインの訪問者が最初に見る公開ページ
  * - `/demo` 配下（BYOKデモ）        … 認証なしで試せることがデモの目的
  *
@@ -46,14 +45,34 @@ const REGISTER_PATH = '/register';
  * デモが扱うのは公開してよいサンプル文書のみで、実データはSupabase側にあり
  * RLSと認証で保護されている。追加時は必ず「未ログインの相手に見せてよいか」を確認すること。
  *
- * 【重要】`/api/auth` 配下へ新しいエンドポイントを追加するときは、
- * 未ログインで呼ばれても安全かを必ず確認すること（この配列で丸ごと公開扱いになる）。
- * ドメイン制限も適用されないため、社内データを返す処理を置いてはいけない。
- *
  * なお `/demo/chat` はGemini APIをブラウザから直接呼ぶため、
  * このサーバーのAPIも環境変数の GEMINI_API_KEY も使わない。
  */
-const PUBLIC_PATHS = [LOGIN_PATH, REGISTER_PATH, '/auth/callback', '/auth/confirm', '/api/auth', '/demo'];
+
+/**
+ * 完全一致でのみ公開するパス。**配下は公開しない。**
+ *
+ * 以前は `/api/auth` を前方一致で公開しており、配下がまとめて公開扱いになっていた。
+ * その形だと `/api/auth/users` のようなエンドポイントを足した瞬間、
+ * 何も意識しないまま未ログインで叩ける状態になる（ドメイン制限も適用されない）。
+ * 公開したいエンドポイントを1本ずつ書く形にして、追加時に必ず判断が要るようにする。
+ */
+const PUBLIC_EXACT_PATHS = [
+  LOGIN_PATH,
+  REGISTER_PATH,
+  '/api/auth/login',
+  '/api/auth/register',
+  '/auth/callback',
+  '/auth/confirm',
+];
+
+/**
+ * 配下も含めて公開するパス。
+ *
+ * `/demo` は `/demo/chat` も未ログインで開ける必要があるため、ここで扱う。
+ * **社内文書を返す経路を、このリストの配下へ置いてはいけない。**
+ */
+const PUBLIC_PREFIX_PATHS = ['/demo'];
 
 /** ランディングページ（完全一致のみ公開。配下は保護対象のまま） */
 const LANDING_PATH = '/';
@@ -76,7 +95,12 @@ function isPublicPath(pathname: string): boolean {
   // ランディングは完全一致のみ。`/` で startsWith 判定すると全パスが公開になってしまう
   if (pathname === LANDING_PATH) return true;
 
-  return PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+  if (PUBLIC_EXACT_PATHS.includes(pathname)) return true;
+
+  // 配下まで公開するパスだけ前方一致で判定する。
+  // `${path}/` と末尾スラッシュを付けて比較するのが重要で、
+  // これが無いと `/demoXXX` のような別パスまで一致してしまう
+  return PUBLIC_PREFIX_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 }
 
 export async function middleware(request: NextRequest) {

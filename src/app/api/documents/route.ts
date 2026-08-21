@@ -24,12 +24,16 @@ import {
  * UI側がこの形に依存して実装するため、
  * **フィールドの追加・削除・リネームを勝手に行ってはいけない**。
  *
- * 【認証について】
- * 未ログインからのAPIアクセス拒否（401）は検索API側の認証Middlewareが
- * 全 /api ルートに対してまとめて担当する。ここでは個別実装しない。
- * GETは createSupabaseServerClient（anonキー・RLS適用）を使うため、
- * 万一Middlewareが無くても未ログインでは0件しか返らない。
- * 一方 POST は service_role で書き込むためRLSが効かない。認証Middlewareが必須。
+ * 【認証について】多層防御にしている。**guardRequest() を外さないこと。**
+ *
+ * Middlewareが /api 全体を一次防御するが、このルートは POST・DELETE で
+ * service_role を使うためRLSが効かない。Middlewareの公開パス設定を
+ * 1行間違えるだけで、社内文書の書き込み口・削除口が開いてしまう。
+ * そのため各メソッドの先頭で guardRequest() を呼び、
+ * 認証と社内メールドメインをこのルート単体でも確認している。
+ *
+ * GETもanonキー＋RLSだけなら未ログインでは0件が返るが、
+ * それでは「該当0件」と「見せてはいけない」を区別できないため同様に確認する。
  */
 
 // pdf-parse は Node.js のAPIに依存するため Edge Runtime では動作しない
