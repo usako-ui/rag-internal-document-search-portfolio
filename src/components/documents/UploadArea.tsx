@@ -15,7 +15,7 @@ import {
 } from '@/components/icons';
 
 /**
- * PDFアップロードエリア（TC-13・TC-14・TC-15 / 要件F-07）
+ * PDFアップロードエリア（要件F-07）
  *
  * 文書管理画面（`/documents`）の上部に置く。
  * UX優先順位2位「PDFを追加しやすい」に対応するため、画面を開いた瞬間に
@@ -52,7 +52,7 @@ type UploadAreaProps = {
   documents: DocumentSummary[];
   /** 進行中・完了直後のアップロード（F-07の段階表示に使う） */
   uploadJobs: UploadJob[];
-  /** ファイルが選択・ドロップされたときに呼ぶ（TC-13） */
+  /** ファイルが選択・ドロップされたときに呼ぶ */
   onUpload: (file: File) => void;
   onDismissJob: (jobId: string) => void;
 };

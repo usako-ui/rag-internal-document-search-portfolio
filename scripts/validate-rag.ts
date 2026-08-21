@@ -1,8 +1,8 @@
 /**
- * Phase VAL：RAG精度検証（TV-01〜TV-07）
+ * 精度検証フェーズ：RAG精度検証
  *
  * `data/case3-test-questions.csv` の12問を実際の POST /api/chat へ順番に投入し、
- * CLAUDE.md セクション6の4観点で評価して記録シート（Markdown）を出力する。
+ * RAG精度検証方針の4観点で評価して記録シート（Markdown）を出力する。
  *
  *  - 検索精度         … 期待した出典文書が検索上位（最大5件）に入っているか
  *  - 回答精度         … 期待される回答の要素（数値・固有名詞）が回答本文に含まれるか
@@ -35,7 +35,7 @@ loadEnv();
 /** 検証対象の開発サーバー */
 const BASE_URL = process.env.VERIFY_BASE_URL ?? 'http://localhost:3002';
 
-/** 評価データ（講座提供の正式な評価データ） */
+/** 評価データ（正式な評価データ） */
 const CSV_PATH = resolve(process.cwd(), 'data/case3-test-questions.csv');
 
 /** 記録シートの出力先 */
@@ -270,7 +270,7 @@ async function postChatWithRetry(
 }
 
 /**
- * 4観点で1問を評価する（CLAUDE.md セクション6）。
+ * 4観点で1問を評価する（RAG精度検証方針）。
  */
 function evaluate(test: TestQuestion, response: ChatResponse, chunks: MatchedChunk[]): Evaluation {
   const notes: string[] = [];
@@ -342,7 +342,7 @@ function evaluate(test: TestQuestion, response: ChatResponse, chunks: MatchedChu
   // ------------------------------------------------------------
   // 観点3：出典表示
   //  記載あり → 出典が1件以上あり、期待した文書を含み、文書名が入っていること
-  //  記載なし → 出典が空であること（空の出典ラベルを出さない：CLAUDE.md セクション10）
+  //  記載なし → 出典が空であること（空の出典ラベルを出さない：UI/UX仕様）
   // ------------------------------------------------------------
   let citation: boolean;
 
@@ -387,7 +387,7 @@ function evaluate(test: TestQuestion, response: ChatResponse, chunks: MatchedChu
   return { retrieval, answer: answerOk, citation, hallucination, notes };
 }
 
-/** 合否記号（絵文字はCLAUDE.md セクション8で禁止のため使わない） */
+/** 合否記号（絵文字はコーディング規約で禁止のため使わない） */
 function mark(ok: boolean): string {
   return ok ? 'OK' : 'NG';
 }
@@ -412,7 +412,7 @@ function buildSheet(results: Result[]): string {
 
   const lines: string[] = [];
 
-  lines.push('# RAG精度検証 記録シート（Phase VAL / TV-02〜TV-07）');
+  lines.push('# RAG精度検証 記録シート（精度検証フェーズ）');
   lines.push('');
   lines.push('> このファイルは `npm run validate:rag` が自動生成します。手で編集しても再実行で上書きされます。');
   lines.push('');
@@ -421,7 +421,7 @@ function buildSheet(results: Result[]): string {
   lines.push('| 項目 | 値 |');
   lines.push('|---|---|');
   lines.push(`| 実施日時 | ${new Date().toLocaleString('ja-JP')} |`);
-  lines.push('| 評価データ | `data/case3-test-questions.csv`（12問） |');
+  lines.push('| 評価データ | 評価データ（12問） |');
   lines.push('| 検証経路 | POST /api/chat（ログイン済みユーザーのCookieを付与） |');
   lines.push(`| 類似度の閾値 | ${SIMILARITY_THRESHOLD} |`);
   lines.push(`| 取得チャンク数の上限 | ${MATCH_COUNT} |`);

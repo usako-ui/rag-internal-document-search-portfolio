@@ -7,7 +7,7 @@ import { toLoginErrorMessage } from '@/lib/auth/loginErrors';
 import { AlertCircleIcon, BookOpenIcon, LoaderIcon } from '@/components/icons';
 
 /**
- * ログインフォーム（TC-18・TS-06 / 要件F-06）
+ * ログインフォーム（要件F-06）
  *
  * ログインは `POST /api/auth/login`（サーバー側）へ委ねる。
  * ブラウザから直接 signInWithPassword を呼ばない理由は2つ。
@@ -92,7 +92,7 @@ export function LoginForm({
       }
 
       // Next.jsのルーターキャッシュを避けるため、通常遷移でページを読み直す
-      // （CLAUDE.md セクション8：ページ遷移は window.location.href を使う）。
+      // （コーディング規約：ページ遷移は window.location.href を使う）。
       // サーバー側が新しいセッションCookieを読んだ状態で画面を描画できる。
       window.location.href = redirectTo;
     } catch (error) {
@@ -179,7 +179,7 @@ export function LoginForm({
           アカウントをお持ちでない方は登録してください
           {/* 案内文とリンクを1行に詰めると語の途中で折り返すため、行を分ける */}
           <br />
-          {/* Next.jsのルーターキャッシュを避けるため <a> で遷移する（CLAUDE.md セクション8） */}
+          {/* Next.jsのルーターキャッシュを避けるため <a> で遷移する（コーディング規約） */}
           <a className={styles.link} href="/register">
             アカウント登録はこちら
           </a>

@@ -7,7 +7,7 @@
  *  - **他人の履歴が絶対に見えないこと**（RLSの実効確認・最重要）
  *  - GET /api/documents の department / keyword フィルターが効くこと
  *
- * Gemini APIは呼ばないため、無料枠（1日20回・Q-35）を消費しない。
+ * Gemini APIは呼ばないため、無料枠（1日20回）を消費しない。
  *
  * 事前に開発サーバーを起動しておくこと：npm run dev -- -p 3002
  * 実行：npm run verify:step1
@@ -188,7 +188,7 @@ async function main() {
   console.log('');
   console.log('【3】他人の履歴が見えないこと（RLS）');
   // RLS検証用の別ユーザーも社内メールドメインで作る。
-  // ドメイン外だとMiddlewareに403で弾かれ、RLSの検証にならない（TS-06）
+  // ドメイン外だとMiddlewareに403で弾かれ、RLSの検証にならない
   const otherEmail = `rls-check-${randomUUID()}@${requireAllowedDomain()}`;
   const otherPassword = `Verify-${randomUUID()}`;
 

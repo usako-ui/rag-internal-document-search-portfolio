@@ -5,7 +5,7 @@ import { checkEmailDomain, getAllowedEmailDomain } from '@/lib/auth/emailDomain'
 import { DEFAULT_REDIRECT_PATH } from '@/lib/auth/redirect';
 
 /**
- * アカウント登録画面（TS-07 / 要件F-06）
+ * アカウント登録画面（要件F-06）
  *
  * 社内メールアドレスを持つ人が自分でアカウントを作れるようにする。
  * 登録後は確認メールのリンクを開いて初めてログインできる

@@ -1,5 +1,5 @@
 /**
- * レート制限の動作確認（Q-52）
+ * レート制限の動作確認
  *
  * 実行：npx tsx scripts/verify-rate-limit.ts
  */

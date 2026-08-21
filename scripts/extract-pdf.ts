@@ -1,12 +1,12 @@
 /**
- * PDFテキスト抽出・チャンキングの動作確認スクリプト（TA-01・TA-02・TA-03）
+ * PDFテキスト抽出・チャンキングの動作確認スクリプト
  *
  * 実行：
  *   npm run extract                      … data/sample-pdfs/ 配下のPDFをすべて処理
  *   npm run extract -- path/to/file.pdf  … 個別のPDFを処理
  *
  * このスクリプトは取り込み結果を目視確認するためのもので、DBへの保存は行わない
- * （保存はTA-05で実装する）。
+ * （保存はで実装する）。
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
@@ -15,7 +15,7 @@ import { extractTextFromPdf } from '../src/lib/pdf/extractText';
 import { DEFAULT_CHUNK_OPTIONS, chunkDocument } from '../src/lib/pdf/chunkText';
 import { PdfProcessingError } from '../src/lib/pdf/errors';
 
-/** 実サンプルPDFの配置先（tasks.md Q-12で入手待ち） */
+/** 実サンプルPDFの配置先 */
 const SAMPLE_DIR = resolve(process.cwd(), 'data/sample-pdfs');
 /** 動作確認用のテストPDF（scripts/generate-test-pdf.mjs で生成） */
 const TEST_DIR = resolve(process.cwd(), 'data/test');
@@ -37,7 +37,7 @@ function resolveTargets(): string[] {
     return listPdfFiles(SAMPLE_DIR);
   }
 
-  console.warn('data/sample-pdfs/ にPDFがないため、テストPDFで動作確認します（tasks.md Q-12）。');
+  console.warn('data/sample-pdfs/ にPDFがないため、テストPDFで動作確認します。');
   return listPdfFiles(TEST_DIR);
 }
 

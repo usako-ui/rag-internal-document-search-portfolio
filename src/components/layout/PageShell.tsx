@@ -38,7 +38,7 @@ export function PageShell({ activeNav, userEmail, title, sub, children }: PageSh
    *
    * 現在地と同じナビを押したときは遷移しない（同じページを読み込み直すだけになるため）。
    * `window.location.href` を使うのはNext.jsのルーターキャッシュ回避のため
-   * （CLAUDE.md セクション8）。
+   * （コーディング規約）。
    */
   const handleNavChange = (id: NavId) => {
     if (id === activeNav) {

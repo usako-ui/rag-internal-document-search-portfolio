@@ -2,7 +2,7 @@ import type { UserSettings } from '@/types/api';
 import { DEFAULT_USER_SETTINGS, parseUserSettings } from '@/lib/settings/userSettings';
 
 /**
- * 利用者設定APIのクライアント（TE-10）
+ * 利用者設定APIのクライアント
  *
  *   GET /api/settings … UserSettings（未保存なら既定値）
  *   PUT /api/settings … UserSettings → 保存後の値

@@ -19,9 +19,9 @@ import { loadUserSettings } from '@/lib/settings/userSettings';
 import { checkRateLimit } from '@/lib/rateLimit';
 
 /**
- * POST /api/chat（TB-09 / 要件F-02・F-03・F-04・F-06）
+ * POST /api/chat（要件F-02・F-03・F-04・F-06）
  *
- * UI（Worktree C）から呼び出す質問用の唯一のエンドポイント。
+ * UI（UI側）から呼び出す質問用の唯一のエンドポイント。
  * 質問 → クエリEmbedding → pgvector検索 → Gemini回答生成 → 出典組み立て、の順に処理する。
  *
  * レスポンス仕様は requirements.md セクション7に従う。
@@ -71,7 +71,7 @@ export async function POST(request: Request): Promise<NextResponse<ChatResponse 
     }
 
     // ------------------------------------------------------------
-    // 社内メールドメインの確認（TS-06 / 要件F-06）
+    // 社内メールドメインの確認（要件F-06）
     //    Middlewareでも弾いているが、公開パス設定の漏れや環境変数の
     //    設定漏れで素通りした場合でも社内文書を返さないよう二重に守る
     // ------------------------------------------------------------
@@ -82,7 +82,7 @@ export async function POST(request: Request): Promise<NextResponse<ChatResponse 
     }
 
     // ------------------------------------------------------------
-    // レート制限（Q-52）
+    // レート制限
     //
     // Gemini無料枠は毎分5回程度のため、1人の連打で全社員が
     // 「APIの利用制限に達しました」に遭遇する。先に本人へ返して原因を分かりやすくする。
@@ -122,11 +122,11 @@ export async function POST(request: Request): Promise<NextResponse<ChatResponse 
     const question = validateQuestion((body as { question?: unknown } | null)?.question);
 
     // ------------------------------------------------------------
-    // 3. クエリEmbedding生成（TB-01）と類似検索（TB-02・TB-03）
+    // 3. クエリEmbedding生成と類似検索
     // ------------------------------------------------------------
-    // 利用者設定（検索件数・回答の長さ）を反映する（TE-10）。
+    // 利用者設定（検索件数・回答の長さ）を反映する。
     // 【重要】類似度閾値は設定に含めない。ハルシネーション抑制の要であり
-    // 利用者が緩められてはならないため 0.62 固定とする（Q-38・2026-08-18 決定）
+    // 利用者が緩められてはならないため 0.62 固定とする（2026-08-18 決定）
     const settings = await loadUserSettings(supabase, user.id);
 
     const queryEmbedding = await generateQueryEmbedding(question);
@@ -134,7 +134,7 @@ export async function POST(request: Request): Promise<NextResponse<ChatResponse 
       matchCount: settings.match_count,
     });
 
-    // 閾値を超えるチャンクが無い＝社内文書に根拠が無い（TB-10）
+    // 閾値を超えるチャンクが無い＝社内文書に根拠が無い
     if (chunks.length === 0) {
       return NextResponse.json({
         answer: NO_ANSWER_MESSAGE,
@@ -144,7 +144,7 @@ export async function POST(request: Request): Promise<NextResponse<ChatResponse 
     }
 
     // ------------------------------------------------------------
-    // 4. 回答生成（TB-05〜TB-07）と出典組み立て（TB-08）
+    // 4. 回答生成と出典組み立て
     // ------------------------------------------------------------
     const { answer, hasAnswer, usedChunks } = await generateAnswer(question, chunks, {
       answerLength: settings.answer_length,

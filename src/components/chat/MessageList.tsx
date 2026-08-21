@@ -20,7 +20,7 @@ const EXAMPLE_QUESTIONS = [
 ];
 
 /**
- * 回答取得に失敗したときの表示（TC-12）。
+ * 回答取得に失敗したときの表示。
  * 「失敗しました」だけで終わらせず、次に取るべき行動（再送信）まで示す。
  */
 function ErrorMessageCard({
@@ -52,7 +52,7 @@ function ErrorMessageCard({
   );
 }
 
-/** 回答生成中のローディング表示（TC-11） */
+/** 回答生成中のローディング表示 */
 function LoadingMessage() {
   return (
     <div className={messageStyles.aiRow} aria-live="polite">

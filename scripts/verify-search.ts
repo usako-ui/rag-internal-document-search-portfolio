@@ -1,8 +1,8 @@
 /**
- * pgvector類似検索の動作確認（TA-08・TA-09・TA-10）
+ * pgvector類似検索の動作確認
  *
  * Supabaseに保存したチャンクに対し、`match_chunks` RPC関数で検索を行う。
- * この関数は Worktree B（/api/chat）が呼び出すものなので、
+ * この関数は 検索API側（/api/chat）が呼び出すものなので、
  * ここで返却内容が仕様どおりか（出典に必要な情報が揃っているか）を確認する。
  *
  * 実行：npm run verify:search
@@ -14,11 +14,11 @@ import { generateEmbedding } from '../src/lib/gemini/embedding';
 
 loadEnv();
 
-/** Worktree Bへ推奨する初期閾値（Q-02の実測に基づく） */
+/** 検索API側へ推奨する初期閾値（実測に基づく） */
 const MATCH_THRESHOLD = 0.62;
 const MATCH_COUNT = 5;
 
-/** match_chunks の戻り値（Worktree Bが受け取る形） */
+/** match_chunks の戻り値（検索API側が受け取る形） */
 type MatchedChunk = {
   chunk_id: string;
   document_id: string;
@@ -52,7 +52,7 @@ async function main() {
   let outOfScopeTotal = 0;
 
   for (const { question, expect } of TEST_QUESTIONS) {
-    // クエリにも文書側と同じNFKC正規化を適用する（Q-18）
+    // クエリにも文書側と同じNFKC正規化を適用する
     const queryVector = await generateEmbedding(question.normalize('NFKC'), 'RETRIEVAL_QUERY');
 
     const { data, error } = await supabase.rpc('match_chunks', {
@@ -104,7 +104,7 @@ async function main() {
   console.log(`  文書に記載がない質問で0件を返せた: ${outOfScopeCorrect}/${outOfScopeTotal}`);
   console.log('');
   console.log('出典に必要な情報（文書名・ページ番号・参照箇所）がRPCから返ることを確認した。');
-  console.log('Worktree B はこの結果をそのまま citations へ変換できる。');
+  console.log('検索API側はこの結果をそのまま citations へ変換できる。');
 
   if (answerable < answerableTotal || outOfScopeCorrect < outOfScopeTotal) {
     console.log('');

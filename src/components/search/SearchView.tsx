@@ -16,7 +16,7 @@ import {
 } from '@/components/icons';
 
 /**
- * 文書を検索する画面（`/search` / 要件F-09 ＋ TE-08）
+ * 文書を検索する画面（`/search` / 要件F-09 ＋）
  *
  * 「いまAIが検索対象にしている文書」を絞り込んで確認するための画面。
  * UX優先順位5位「現在の検索対象文書が分かる」に対応する。
@@ -26,7 +26,7 @@ import {
  * 一覧を見ながら誤って削除してしまう事故を避けるため、
  * 文書を変更する操作は文書管理へ集約している。
  *
- * 【絞り込みをサーバー側で行う理由（TE-08）】
+ * 【絞り込みをサーバー側で行う理由】
  * 管轄部署とキーワードは GET /api/documents のクエリパラメータで絞り込む。
  * 文書が増えても全件をブラウザへ送らずに済み、
  * 「人事部の文書だけ見たい」という使い方が件数に関わらず成立する。
@@ -91,7 +91,7 @@ export function SearchView() {
   }, [library.filters, library.setFilters]);
 
   /**
-   * キーワードの反映をデバウンスする（TE-08）。
+   * キーワードの反映をデバウンスする。
    *
    * 1文字打つたびに GET /api/documents を呼ぶと、
    * 入力中ずっと通信が走り一覧がちらつく。打ち終わりを待ってから1回だけ送る。
@@ -287,7 +287,7 @@ export function SearchView() {
               <p className={styles.detailNote}>{getStatusDescription(selectedDocument.status)}</p>
 
               {/*
-                ページ遷移は <a> タグを使う（CLAUDE.md セクション8）。
+                ページ遷移は <a> タグを使う（コーディング規約）。
                 Next.jsのルーターキャッシュに前の画面が残らないようにするため
               */}
               <div className={styles.detailActions}>

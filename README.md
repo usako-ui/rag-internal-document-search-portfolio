@@ -37,7 +37,7 @@
 
 ## デモURL
 
-TODO：Vercelデプロイ後に追記
+準備中です。公開後にこちらへ掲載します。
 
 APIキーをお持ちの方は、ログイン不要のデモ（`/demo`）でも動作を確認できます。
 ご自身のGemini APIキーをブラウザに入力して試す形式で、サンプル文書5件のみを対象とします。
@@ -98,31 +98,51 @@ APIキーをお持ちの方は、ログイン不要のデモ（`/demo`）でも�
 
 ## 画面イメージ
 
-> **実際に動作しているアプリから自動撮影した画面です**（`npm run capture:screenshots`）。
-> イメージ図やモックアップではありません。
-> 全13枚と撮り直し手順は [docs/screenshots/](docs/screenshots/README.md) を参照してください。
-> ログイン中のメールアドレスは、資料用に `user@example.co.jp` へ差し替えています。
-
-### ランディングページ
-![ランディングページ](docs/screenshots/01-landing.png)
+> **実際に動作しているアプリの画面です。** イメージ図やモックアップではありません。
+> 画像内のメールアドレスは、実在のものを載せないため `user@example.co.jp` へ差し替えています。
 
 ### チャット画面（回答・出典表示）
-![チャット画面](docs/screenshots/06-chat-answer.png)
 
-### 文書管理
-![文書管理](docs/screenshots/08-documents.png)
+このシステムの中心となる画面です。回答のすぐ下に、根拠となった文書名とページ番号が並びます。
 
-### ダッシュボード
-![ダッシュボード](docs/screenshots/04-dashboard.png)
+![チャット画面（回答・出典表示）](docs/screenshots/06-chat-answer.png)
 
-### スマホ表示
-![スマホ表示](docs/screenshots/13-mobile-chat.png)
+### その他の画面
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="docs/screenshots/01-landing.png"><img src="docs/screenshots/01-landing.png" alt="ランディングページ"></a><br>
+      <b>ランディングページ</b><br>
+      <sub>未ログインの訪問者向けの公開ページ</sub>
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/screenshots/04-dashboard.png"><img src="docs/screenshots/04-dashboard.png" alt="ダッシュボード"></a><br>
+      <b>ダッシュボード</b><br>
+      <sub>ログイン後の初期画面。主要導線と直近の利用状況</sub>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <a href="docs/screenshots/08-documents.png"><img src="docs/screenshots/08-documents.png" alt="文書管理"></a><br>
+      <b>文書管理</b><br>
+      <sub>PDFの登録・一覧・更新・削除</sub>
+    </td>
+    <td valign="top" align="center">
+      <a href="docs/screenshots/13-mobile-chat.png"><img src="docs/screenshots/13-mobile-chat.png" alt="スマホ表示" width="190"></a><br>
+      <b>スマホ表示</b><br>
+      <sub>1カラム＋ボトムナビ</sub>
+    </td>
+  </tr>
+</table>
+
+各画像はクリックすると原寸で開きます。
 
 ---
 
 ## どこまで正確に答えられるか
 
-講座提供の評価データ12問を使い、実際の運用と同じ操作で検証しました。
+あらかじめ用意した評価データ12問を使い、実際の運用と同じ操作で検証しました。
 
 | 確認したこと | 結果 | 判定 |
 |---|---|---|
@@ -134,7 +154,7 @@ APIキーをお持ちの方は、ログイン不要のデモ（`/demo`）でも�
 <details>
 <summary>技術的な検証条件（クリックで開きます）</summary>
 
-検証データは `case3-test-questions.csv`（12問）。
+検証データは12問（文書に記載あり10問／記載なし2問）。
 検証は実運用と同じ経路（ログイン済みユーザーのCookieを付与した `POST /api/chat`）で実施しています。
 
 | 観点 | 母数 | 合格 | 正答率 |
@@ -144,6 +164,8 @@ APIキーをお持ちの方は、ログイン不要のデモ（`/demo`）でも�
 | 出典表示 | 12（全問） | 12 | 100% |
 | ハルシネーション | 12（全問） | 12 | 100%（0件） |
 
+検証は `npm run validate:rag` で再実行できます。
+
 </details>
 
 - 文書に記載のない2問では、いずれも推測せず「該当する情報を社内文書から確認できませんでした。」を返しました
@@ -152,14 +174,7 @@ APIキーをお持ちの方は、ログイン不要のデモ（`/demo`）でも�
 > **この数値は上記12問・5文書に対する検証結果であり、あらゆる質問への精度を保証するものではありません。**
 > 文書が増えた場合・質問の傾向が変わった場合は、改めて検証が必要です。
 
-詳細：[docs/validation/rag-accuracy-report.md](docs/validation/rag-accuracy-report.md)
-全12問の記録：[docs/validation/rag-evaluation-sheet.md](docs/validation/rag-evaluation-sheet.md)
-
-再実行：
-
-```bash
-npm run validate:rag
-```
+詳細：[検証レポート](docs/validation/rag-accuracy-report.md)　／　全12問の記録：[評価シート](docs/validation/rag-evaluation-sheet.md)
 
 ---
 
@@ -179,6 +194,24 @@ npm run validate:rag
 ---
 
 # Part 2　導入判断のための情報
+
+## お引き渡し時点で確認できていること
+
+| 確認項目 | 結果 |
+|---|---|
+| 社外のアカウントから社内文書へ到達できないこと（データベースへ直接アクセスされた場合を含む） | 確認済み |
+| ログインしていない状態では、画面も機能も利用できないこと | 確認済み |
+| APIキーなどの秘密情報が、ブラウザ側へ渡っていないこと | 確認済み |
+| 回答精度の検証（12問・4観点）を実施し、結果を記録していること | 確認済み |
+| エラー時に、原因と次に取るべき行動が画面に表示されること | 確認済み |
+| PC・タブレット・スマートフォンで操作できること | 確認済み |
+| 運用手順書をお渡ししていること | 確認済み |
+
+**公開環境への配置は未実施です。**公開後、[デモURL](#デモurl)へ掲載します。
+
+技術的な裏付けは [セキュリティ設計](#セキュリティ設計)・[検証レポート](docs/validation/rag-accuracy-report.md) に記載しています。
+
+---
 
 ## なぜ今回はPDFだけなのか
 
@@ -312,7 +345,7 @@ MVPで検証できたことを踏まえた拡張案です。費用・工数は�
 | 言語 | TypeScript 5 | |
 | データベース | Supabase（PostgreSQL 17 + pgvector） | リージョン：ap-northeast-1（東京） |
 | 認証 | Supabase Auth | メール確認必須 |
-| 回答生成 | Gemini API（`gemini-2.5-flash`） | 模擬案件のコスト都合。本番採用は未確定 |
+| 回答生成 | Gemini API（`gemini-2.5-flash`） | 検証段階のコスト都合で選定。本番採用は未確定 |
 | Embedding | Gemini API（`gemini-embedding-2`・768次元） | pgvectorのHNSW上限（2000次元）に収めるため768次元 |
 | PDF処理 | `pdf-parse` | |
 | スタイル | CSS Modules + CSSカスタムプロパティ | アイコンはLucide Iconsのみ |
@@ -470,6 +503,34 @@ npm run create:test-user
 
 ---
 
+## 動作確認スクリプト
+
+要件ごとに動作確認スクリプトを用意し、実装のたびに実行しています。
+すべて実際のAPI・DBへ接続して確認するもので、モックではありません。
+
+**Gemini APIを使う列に「使う」とある項目は、実行するたびに無料枠（1日20回・1分5回）を消費します。**
+続けて実行すると制限に達するため、必要なものだけを選んで実行してください。
+
+| コマンド | 確認する内容 | Gemini API |
+|---|---|---|
+| `npm run verify:chunking` | 見出し境界でのチャンク分割 | 使わない |
+| `npm run verify:normalization` | テキスト正規化（文書側とクエリ側の一致） | 使わない |
+| `npm run verify:embedding` | Embedding生成と検索品質 | 使う |
+| `npm run verify:search` | pgvectorによる類似検索 | 使う |
+| `npm run verify:retrieval` | 検索処理（正規化・閾値・文書外の除外） | 使う |
+| `npm run verify:chat` | 回答生成と出典の組み立て | 使う |
+| `npm run verify:chat-api` | `POST /api/chat` のHTTPレベルの挙動 | 使う |
+| `npm run verify:multi-doc` | 複数文書にまたがる質問での出典表示 | 使う |
+| `npm run verify:domain` | 社内メールドメイン制限 | 使わない |
+| `npm run verify:register` | 自己登録（ドメイン検証・アカウント列挙の防止） | 使わない |
+| `npm run verify:rate-limit` | レート制限 | 使わない |
+| `npm run verify:nav` | 画面構成とURL（未ログイン時の保護を含む） | 使わない |
+| `npm run verify:demo` | BYOKデモ（APIキーをサーバーへ送らないこと） | 使う |
+| `npm run verify:e2e` | 主要機能の通し動作確認 | 使う |
+| `npm run validate:rag` | 精度検証（12問 × 4観点） | 使う |
+
+---
+
 ## セキュリティ設計
 
 クライアントの最重要要件は「社外への情報漏洩を絶対に避けること」です。実装済みの対策は以下のとおりです。
@@ -524,30 +585,6 @@ SOC2は技術的対策だけでなく、組織体制・運用ルール・監査�
 
 ---
 
-## 納品前チェックリスト
-
-| # | 項目 | 状態 |
-|---|---|---|
-| 1 | `.env.local` がGitにコミットされていない | 完了 |
-| 2 | APIキー・シークレットがコードにハードコードされていない | 完了 |
-| 3 | `.env.example` が実際の環境変数と同期している | 完了 |
-| 4 | 未ログインで保護対象の画面・APIにアクセスできない | 完了 |
-| 5 | 社外ドメインのアカウントが社内文書へ到達できない（DB直接アクセスを含む） | 完了 |
-| 6 | RLSが全テーブルで有効になっている | 完了 |
-| 7 | `service_role` キー・Gemini APIキーがクライアントバンドルに含まれていない | 完了 |
-| 8 | 精度検証（12問・4観点）を実施し、結果を記録している | 完了 |
-| 9 | エラーメッセージに原因と次の行動が書かれている | 完了 |
-| 10 | 主要画面がPC・タブレット・スマホで操作できる | 完了 |
-| 11 | セットアップ手順どおりに環境を再構築できる | 完了 |
-| 12 | 運用手順書をクライアントへ提供している | 完了（[docs/operations.md](docs/operations.md)） |
-| 13 | Phase 2の提案内容を提示している | 完了（[docs/phase2-proposal.md](docs/phase2-proposal.md)） |
-| 14 | ブラウザでの最終動作確認 | TODO |
-| 15 | Vercelへのデプロイと本番環境変数の設定 | TODO |
-| 16 | 画面スクリーンショットの取得（13枚・自動撮影） | 完了 |
-| 17 | Supabase「Leaked password protection」の有効化 | 保留（Supabase Proプラン限定の機能のため。Q-37） |
-
----
-
 ## ドキュメント
 
 | ファイル | 内容 |
@@ -557,7 +594,6 @@ SOC2は技術的対策だけでなく、組織体制・運用ルール・監査�
 | [docs/operations.md](docs/operations.md) | クライアント向け運用手順書 |
 | [docs/phase2-proposal.md](docs/phase2-proposal.md) | Phase 2提案資料 |
 | [docs/validation/rag-accuracy-report.md](docs/validation/rag-accuracy-report.md) | RAG精度検証レポート |
-| [CLAUDE.md](CLAUDE.md) | 開発ルール・判断基準 |
 | [requirements.md](requirements.md) | 要件定義書 |
 | [project-overview.md](project-overview.md) | プロジェクト概要 |
 

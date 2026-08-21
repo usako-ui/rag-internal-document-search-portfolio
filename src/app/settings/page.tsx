@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildLoginUrl } from '@/lib/auth/redirect';
 
 /**
- * 設定画面（TE-10）
+ * 設定画面
  *
  * 【画面保護（要件F-06）】
  * 設定は本人のみが変更できるべきものなので、

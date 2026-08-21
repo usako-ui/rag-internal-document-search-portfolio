@@ -1,12 +1,12 @@
 /**
- * 納品前 通し動作確認（Phase ENH 完了後）
+ * 納品前 通し動作確認（改善フェーズ 完了後）
  *
  * 指定された確認項目8件を、実際の画面と同じ経路（HTTP・Cookie認証）でたどる。
  * ブラウザのクリック操作は自動化できないため、**画面の裏側の動作**を確認する。
  * 見た目・レイアウト・モーダルの開閉はブラウザでの目視が必要（報告に一覧を添える）。
  *
  * 【Gemini無料枠について】
- * 質問を1回だけ実行する（1日20回・Q-35）。実行のたびに1回消費する点に注意。
+ * 質問を1回だけ実行する（1日20回）。実行のたびに1回消費する点に注意。
  *
  * 事前に開発サーバーを起動しておくこと：npm run dev -- -p 3002
  * 実行：npm run verify:e2e
@@ -158,7 +158,7 @@ async function main() {
   if (chat.status === 429) {
     console.log('  -- Gemini APIの利用制限に達しているため、質問系の確認をスキップします');
     console.log(`     メッセージ: ${(chat.json as { error?: string })?.error ?? ''}`);
-    check('429時に原因と待ち時間が分かる文言が返る（TE-05）', true);
+    check('429時に原因と待ち時間が分かる文言が返る', true);
   } else {
     check('回答が返る', chat.status === 200 && answer?.has_answer === true, `status=${chat.status}`);
     check('回答本文が空でない', (answer?.answer.length ?? 0) > 0);
@@ -167,9 +167,9 @@ async function main() {
       '出典に文書名とdocument_idがある',
       (answer?.citations ?? []).every((c) => Boolean(c.document_name) && Boolean(c.document_id))
     );
-    // TE-06：出典モーダルに表示する該当箇所テキスト
+    // 出典モーダルに表示する該当箇所テキスト
     check(
-      '出典に該当箇所テキスト（content）が入っている（TE-06）',
+      '出典に該当箇所テキスト（content）が入っている',
       (answer?.citations ?? []).every((c) => typeof c.content === 'string' && c.content.length > 0)
     );
 
@@ -298,8 +298,8 @@ async function main() {
   const settingsHtml = await settingsPage.text();
   check('設定画面が開ける', settingsPage.status === 200, `status=${settingsPage.status}`);
   check('メールアドレスが読み取り専用で表示される', settingsHtml.includes(email));
-  // Q-40：表示言語の項目は削除済み
-  check('「表示言語」の項目が無い（Q-40）', !settingsHtml.includes('表示言語'));
+  // 表示言語の項目は削除済み
+  check('「表示言語」の項目が無い', !settingsHtml.includes('表示言語'));
 
   const saveResult = await callApi('PUT', '/api/settings', {
     cookie,

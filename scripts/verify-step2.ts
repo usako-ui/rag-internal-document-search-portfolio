@@ -8,10 +8,10 @@
  *  - GET/PUT /api/settings が本人の設定のみ読み書きできること
  *  - **他人の設定が見えない・書き換えられないこと**（RLSの実効確認）
  *  - 不正な設定値が拒否されること（閾値は設定項目に無いことも確認）
- *  - 出典に該当箇所の本文（content）が含まれること（TE-06の前提）
- *  - 履歴に保存した出典から content を復元できること（TE-07の前提）
+ *  - 出典に該当箇所の本文（content）が含まれること
+ *  - 履歴に保存した出典から content を復元できること
  *
- * Gemini APIは呼ばないため、無料枠（1日20回・Q-35）を消費しない。
+ * Gemini APIは呼ばないため、無料枠（1日20回）を消費しない。
  *
  * 事前に開発サーバーを起動しておくこと：npm run dev -- -p 3002
  * 実行：npm run verify:step2
@@ -165,9 +165,9 @@ async function main() {
     initialSettings?.history_limit === 20 && initialSettings?.match_count === 5,
     JSON.stringify(initialSettings)
   );
-  // Q-40：表示言語は設定項目から削除済み。レスポンスに含まれないこと
+  // 表示言語は設定項目から削除済み。レスポンスに含まれないこと
   check(
-    '表示言語が設定に含まれない（Q-40）',
+    '表示言語が設定に含まれない',
     initialSettings !== null && !('language' in initialSettings),
     JSON.stringify(initialSettings)
   );
@@ -219,7 +219,7 @@ async function main() {
     check(`${testCase.label}が400で拒否される`, result.status === 400, `status=${result.status}`);
   }
 
-  // Q-38：閾値は設定項目に含めない。送っても保存されないこと
+  // 閾値は設定項目に含めない。送っても保存されないこと
   const withThreshold = await callApi('PUT', '/api/settings', {
     cookie,
     body: {
@@ -231,7 +231,7 @@ async function main() {
   });
   const thresholdResult = withThreshold.json as Record<string, unknown> | null;
   check(
-    '閾値を送っても設定に取り込まれない（Q-38）',
+    '閾値を送っても設定に取り込まれない',
     withThreshold.status === 200 && thresholdResult !== null && !('threshold' in thresholdResult),
     JSON.stringify(thresholdResult)
   );
@@ -247,7 +247,7 @@ async function main() {
   console.log('');
   console.log('【4】他人の設定が見えないこと（RLS）');
   // RLS検証用の別ユーザーも社内メールドメインで作る。
-  // ドメイン外だとMiddlewareに403で弾かれ、RLSの検証にならない（TS-06）
+  // ドメイン外だとMiddlewareに403で弾かれ、RLSの検証にならない
   const otherEmail = `settings-rls-${randomUUID()}@${requireAllowedDomain()}`;
   const otherPassword = `Verify-${randomUUID()}`;
 
@@ -295,7 +295,7 @@ async function main() {
   // 5. 出典モーダルの前提（該当箇所テキスト）
   // ------------------------------------------------------------
   console.log('');
-  console.log('【5】出典の該当箇所テキスト（TE-06の前提）');
+  console.log('【5】出典の該当箇所テキスト');
 
   const sampleContent = '第2章 休日・休暇\n年次有給休暇は、入社6ヶ月経過後に10日付与する。';
   const marker = `STEP2検証 ${randomUUID()}`;

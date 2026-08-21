@@ -6,7 +6,7 @@ import { generateEmbeddings } from '@/lib/gemini/embedding';
 import { PdfProcessingError } from '@/lib/pdf/errors';
 
 /**
- * PDF取り込みパイプライン（TA-05・TA-06・TA-11 / 要件F-01）
+ * PDF取り込みパイプライン（要件F-01）
  *
  * PDF → テキスト抽出 → チャンキング → Embedding生成 → Supabase保存
  *
@@ -14,7 +14,7 @@ import { PdfProcessingError } from '@/lib/pdf/errors';
  * UI側（F-07・F-09）はこの値を見て「検索可能」「処理中」「エラー」を表示するため、
  * 途中で失敗した場合も必ず status を error へ更新して放置しないこと。
  *
- * 処理を2段階に分けている理由（TA-11）：
+ * 処理を2段階に分けている理由：
  * `POST /api/documents` は仕様上 `{ document_id, status: "processing" }` を即座に返す。
  * Embedding生成の完了を待つとレスポンスが数秒〜数十秒ブロックされ、
  * F-07の段階表示（アップロード済み→抽出中→作成中→検索可能）が成立しない。
@@ -34,7 +34,7 @@ export type IngestResult = {
 };
 
 export type IngestParams = {
-  /** 元のファイル名（例：case3-doc1-employment-rules.pdf） */
+  /** 元のファイル名（例：employment-rules.pdf） */
   fileName: string;
   data: Buffer | Uint8Array;
   /** 文書名を明示する場合。省略時はPDFの1行目から推定する */
@@ -259,7 +259,7 @@ export async function buildDocumentIndex(params: {
       });
     }
 
-    // 6. 検索可能な状態にする（TA-06）
+    // 6. 検索可能な状態にする
     const { error: updateError } = await supabase
       .from('documents')
       .update({ status: 'ready', updated_at: new Date().toISOString() })

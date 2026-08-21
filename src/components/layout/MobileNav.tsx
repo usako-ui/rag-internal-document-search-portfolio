@@ -39,7 +39,7 @@ type MobileNavProps = {
   onNavChange: (id: NavId) => void;
 };
 
-/** ボトムナビゲーション（TC-09・≤640pxのみ表示） */
+/** ボトムナビゲーション（≤640pxのみ表示） */
 export function MobileNav({ activeNav, onNavChange }: MobileNavProps) {
   return (
     <nav className={styles.nav} aria-label="モバイルナビゲーション">

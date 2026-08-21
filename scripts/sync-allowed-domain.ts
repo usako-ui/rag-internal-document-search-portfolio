@@ -1,5 +1,5 @@
 /**
- * 許可メールドメインをDBへ同期する（Phase DEL・QAレビュー HIGH-1）
+ * 許可メールドメインをDBへ同期する（納品フェーズ・QAレビュー HIGH-1）
  *
  * 社内メールドメイン制限は2か所で効いている。
  *   1. アプリ側 … Middleware・各API Route（環境変数 ALLOWED_EMAIL_DOMAIN を読む）

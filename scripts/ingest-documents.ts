@@ -1,5 +1,5 @@
 /**
- * サンプルPDFをSupabaseへ取り込む（TA-05・TA-06・TA-07）
+ * サンプルPDFをSupabaseへ取り込む
  *
  * PDF → テキスト抽出 → チャンキング → Embedding生成 → Supabase保存
  *

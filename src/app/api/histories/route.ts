@@ -15,7 +15,7 @@ import type { Citation } from '@/types/api';
  * service_role を使うとRLSを迂回し、他人の履歴が見える・書ける状態になる。
  */
 
-// 履歴は常に最新を返す必要があるためキャッシュしない（CLAUDE.md セクション8）
+// 履歴は常に最新を返す必要があるためキャッシュしない（コーディング規約）
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
@@ -68,7 +68,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     }
 
     // ------------------------------------------------------------
-    // 社内メールドメインの確認（TS-06 / 要件F-06）
+    // 社内メールドメインの確認（要件F-06）
     //    Middlewareでも弾いているが、公開パス設定の漏れや環境変数の
     //    設定漏れで素通りした場合でも社内文書を返さないよう二重に守る
     // ------------------------------------------------------------
@@ -128,7 +128,7 @@ function normalizeCitations(value: unknown): Citation[] {
       page: typeof item.page === 'string' ? item.page : null,
       section: typeof item.section === 'string' ? item.section : null,
       document_id: item.document_id as string,
-      // 履歴から出典モーダルを開けるよう該当箇所の本文も保存する（TE-06・TE-07）。
+      // 履歴から出典モーダルを開けるよう該当箇所の本文も保存する。
       // 古い履歴には content が無いため、欠けている場合は空文字にする
       content: typeof item.content === 'string' ? item.content : '',
     }));
@@ -152,7 +152,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     // ------------------------------------------------------------
-    // 社内メールドメインの確認（TS-06 / 要件F-06）
+    // 社内メールドメインの確認（要件F-06）
     //    Middlewareでも弾いているが、公開パス設定の漏れや環境変数の
     //    設定漏れで素通りした場合でも社内文書を返さないよう二重に守る
     // ------------------------------------------------------------

@@ -4,7 +4,7 @@ import type { DocumentSummary } from '@/types/api';
  * 文書一覧のモックデータ
  *
  * 【重要】GET /api/documents のレスポンス型（DocumentSummary[]）と完全に同じ形にすること。
- * TC-16で実APIへ差し替える。
+ * 実装完了後に実APIへ差し替える。
  *
  * 内容は project-overview.md セクション8のサンプル5文書に合わせている。
  * status は3種類（ready / processing / error）すべてを含め、

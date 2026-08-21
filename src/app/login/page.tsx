@@ -5,9 +5,9 @@ import { sanitizeRedirectPath } from '@/lib/auth/redirect';
 import { DOMAIN_RESTRICTION_MESSAGE, checkEmailDomain } from '@/lib/auth/emailDomain';
 
 /**
- * ログイン画面（TC-18・TS-06 / 要件F-06）
+ * ログイン画面（要件F-06）
  *
- * Q-26（Worktree B確定）：未認証で画面へアクセスすると
+ * 検索API側の仕様：未認証で画面へアクセスすると
  * `/login?redirectTo=元のURL` へリダイレクトされる。
  * ログイン後は redirectTo のページへ戻す。
  *

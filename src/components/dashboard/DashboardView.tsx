@@ -31,14 +31,14 @@ import {
  *
  * 【表示するデータについて】
  * 質問履歴・文書の状態は実データ（GET /api/histories・GET /api/documents）。
- * 精度サマリーだけは Phase VAL の測定結果を固定値として表示する（下記コメント参照）。
+ * 精度サマリーだけは 精度検証フェーズ の測定結果を固定値として表示する（下記コメント参照）。
  */
 
 /** 「最近の質問履歴」に出す件数 */
 const RECENT_HISTORY_COUNT = 5;
 
 /**
- * 精度サマリー（Phase VALの測定結果・固定値）。
+ * 精度サマリー（精度検証フェーズの測定結果・固定値）。
  *
  * 【重要】ここは実測値のみを載せること。
  * 測っていない数字を出すと、クライアントへの説明が事実と食い違う。
@@ -46,7 +46,7 @@ const RECENT_HISTORY_COUNT = 5;
  *
  *  - 回答精度100%       … 12問中、文書に記載のある10問すべて正答
  *  - ハルシネーション0件 … 12問すべてで文書外の推測回答なし
- *  - 検証問題数12問      … 講座提供の case3-test-questions.csv
+ *  - 検証問題数12問      … 正式な評価データ
  *  - 平均回答時間2.0秒   … POST /api/chat の成功21件の実測平均（1.39〜2.88秒）
  */
 const ACCURACY_STATS = [
@@ -145,7 +145,7 @@ export function DashboardView() {
         {/* ─── 上部：クイックアクション ─── */}
         <section className={styles.quickSection} aria-label="クイックアクション">
           {/*
-            ページ遷移は <a> タグを使う（CLAUDE.md セクション8）。
+            ページ遷移は <a> タグを使う（コーディング規約）。
             Next.jsのルーターキャッシュに前の画面が残らないようにするため
           */}
           {QUICK_ACTIONS.map((action) => (

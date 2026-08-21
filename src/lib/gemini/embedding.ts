@@ -1,9 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
 
 /**
- * Gemini Embedding生成（TA-04 / 要件F-01）
+ * Gemini Embedding生成（要件F-01）
  *
- * 【重要】文書側（Worktree A）とクエリ側（Worktree B）で、
+ * 【重要】文書側（文書取り込み側）とクエリ側（検索API側）で、
  * 必ず同じモデル・同じ次元数を使うこと。
  * 異なるとベクトル空間がずれ、検索が機能しなくなる。
  */
@@ -31,9 +31,9 @@ export const EMBEDDING_DIMENSIONS = 768;
  * 文書取り込みとクエリで必ず使い分けること。
  */
 export type EmbeddingTaskType =
-  /** 文書の取り込み時（Worktree A） */
+  /** 文書の取り込み時（文書取り込み側） */
   | 'RETRIEVAL_DOCUMENT'
-  /** 検索クエリ時（Worktree B） */
+  /** 検索クエリ時（検索API側） */
   | 'RETRIEVAL_QUERY';
 
 /**

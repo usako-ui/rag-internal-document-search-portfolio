@@ -14,29 +14,29 @@ import {
 } from '@/lib/pdf/errors';
 
 /**
- * 文書API（TA-11・TA-12・TA-13 / 要件F-01・F-07・F-09）
+ * 文書API（要件F-01・F-07・F-09）
  *
  * - POST   /api/documents … PDFアップロードを受け取り、取り込みパイプラインを起動する
  * - GET    /api/documents … 登録済み文書の一覧を返す（文書一覧画面 F-09）
  * - DELETE /api/documents … 登録済み文書を削除する（文書管理画面 F-09）
  *
  * レスポンス形式は requirements.md セクション7で確定済み。
- * Worktree C（UI）がこの形に依存して実装するため、
+ * UI側がこの形に依存して実装するため、
  * **フィールドの追加・削除・リネームを勝手に行ってはいけない**。
  *
  * 【認証について】
- * 未ログインからのAPIアクセス拒否（401）は Worktree B の TB-11（認証Middleware）が
+ * 未ログインからのAPIアクセス拒否（401）は検索API側の認証Middlewareが
  * 全 /api ルートに対してまとめて担当する。ここでは個別実装しない。
  * GETは createSupabaseServerClient（anonキー・RLS適用）を使うため、
  * 万一Middlewareが無くても未ログインでは0件しか返らない。
- * 一方 POST は service_role で書き込むためRLSが効かない。TB-11が必須。
+ * 一方 POST は service_role で書き込むためRLSが効かない。認証Middlewareが必須。
  */
 
 // pdf-parse は Node.js のAPIに依存するため Edge Runtime では動作しない
 export const runtime = 'nodejs';
 
 // 文書一覧・取り込み状態は常に最新を返す必要があるためキャッシュしない
-// （CLAUDE.md セクション8：Supabaseクエリは no-store）
+// （コーディング規約：Supabaseクエリは no-store）
 export const dynamic = 'force-dynamic';
 
 /** レスポンスをキャッシュさせないための共通ヘッダー */
@@ -80,9 +80,9 @@ function toErrorResponse(error: unknown): NextResponse {
 }
 
 /**
- * ログイン状態と社内メールドメインを確認する（Q-20・TS-06 / 要件F-06）
+ * ログイン状態と社内メールドメインを確認する（要件F-06）
  *
- * 未認証拒否は Middleware（TB-11）が全 `/api` に対して行っているが、
+ * 未認証拒否は Middlewareが全 `/api` に対して行っているが、
  * このルートは POST が service_role で書き込むためRLSが効かない。
  * Middlewareの公開パス設定を誤った瞬間に社内文書の書き込み口が開くため、
  * ここでも独立して確認する（多層防御）。
@@ -124,20 +124,20 @@ function isPdfFile(file: File): boolean {
 }
 
 /**
- * POST /api/documents（TA-11 / 要件F-01・F-07）
+ * POST /api/documents（要件F-01・F-07）
  *
  * PDFを受け取り、`{ document_id, status: "processing" }` を即座に返す。
  * Embedding生成は応答後にバックグラウンドで継続し、完了後に status が ready になる。
- * UI側（TC-14）は GET /api/documents をポーリングして段階表示を行う。
+ * UI側は GET /api/documents をポーリングして段階表示を行う。
  *
  * ステータスコードは 202 Accepted（受理したが処理は未完了）。
  *
  * PDFが読めない・サイズ超過などは応答前に判明するため、
- * その場で具体的なエラーメッセージを返す（F-07・TA-13）。
+ * その場で具体的なエラーメッセージを返す（F-07）。
  */
 export async function POST(request: Request): Promise<NextResponse> {
   try {
-    // 0. 認証・社内ドメイン確認（Q-20・TS-06）
+    // 0. 認証・社内ドメイン確認
     //    service_role で書き込むためRLSが効かない。ここを通さない経路を作らないこと
     const denied = await guardRequest();
     if (denied) return denied;
@@ -166,7 +166,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       throw createSizeExceededError(file.size);
     }
 
-    // 5. 差し替え対象の指定を受け取る（資料更新 F-08 / Q-50）
+    // 5. 差し替え対象の指定を受け取る（資料更新 F-08）
     //
     //    文書管理画面の「更新」は、どの文書を差し替えるかを利用者が選んでいる。
     //    その意思をIDで受け取らないと、改訂でPDFのタイトル行が変わったときに
@@ -231,7 +231,7 @@ function escapeLikePattern(keyword: string): string {
 }
 
 /**
- * GET /api/documents（TA-12 / 要件F-09 ＋ 納品前改善フェーズ STEP 1-4）
+ * GET /api/documents（要件F-09 ＋ 納品前改善フェーズ STEP 1-4）
  *
  * 登録済み文書の一覧を返す。レスポンスは配列（requirements.md セクション7）。
  * `status` は processing / ready / error のいずれかで、
@@ -248,7 +248,7 @@ function escapeLikePattern(keyword: string): string {
  */
 export async function GET(request: Request): Promise<NextResponse> {
   try {
-    // 認証・社内ドメイン確認（TS-06）。
+    // 認証・社内ドメイン確認。
     // anonキー＋RLSでも未ログインでは0件になるが、
     // 「0件」と「見せてはいけない」を区別できるよう明示的に拒否する
     const denied = await guardRequest();

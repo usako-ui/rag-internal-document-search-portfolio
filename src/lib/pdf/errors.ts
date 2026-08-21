@@ -39,7 +39,7 @@ export function createSizeExceededError(actualBytes: number): PdfProcessingError
 }
 
 /**
- * ファイルが送信されていない場合（TA-13）。
+ * ファイルが送信されていない場合。
  * multipart/form-data の `file` フィールドが無い・空のときに使う。
  */
 export function createNoFileError(): PdfProcessingError {
@@ -49,7 +49,7 @@ export function createNoFileError(): PdfProcessingError {
 }
 
 /**
- * PDF以外のファイルが送信された場合（TA-13）。
+ * PDF以外のファイルが送信された場合。
  * MVPの対象はPDFのみ（Word・ConfluenceはPhase 2）。
  */
 export function createUnsupportedTypeError(fileName: string): PdfProcessingError {
@@ -58,7 +58,7 @@ export function createUnsupportedTypeError(fileName: string): PdfProcessingError
   );
 }
 
-/** リクエストが multipart/form-data として解釈できなかった場合（TA-13） */
+/** リクエストが multipart/form-data として解釈できなかった場合 */
 export function createInvalidFormError(cause?: unknown): PdfProcessingError {
   return new PdfProcessingError(
     'アップロードの形式が正しくありません。ファイルを選択し直して、もう一度お試しください。',

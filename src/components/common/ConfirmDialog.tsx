@@ -5,7 +5,7 @@ import styles from './ConfirmDialog.module.css';
 import { AlertCircleIcon, XIcon } from '@/components/icons';
 
 /**
- * 確認ダイアログ（TC-17 / 要件F-08）
+ * 確認ダイアログ（要件F-08）
  *
  * 資料更新・再インデックスは既存の検索データを作り直す操作のため、
  * 誤操作を防ぐ確認ステップを必ず挟む（F-08：「誤操作防止のため確認ステップを必ず入れる」）。

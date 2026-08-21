@@ -6,7 +6,7 @@ import { PASSWORD_HINT_MESSAGE, validateRegisterInput } from '@/lib/auth/registe
 import { AlertCircleIcon, BookOpenIcon, CheckCircleIcon, LoaderIcon } from '@/components/icons';
 
 /**
- * アカウント登録フォーム（TS-07 / 要件F-06）
+ * アカウント登録フォーム（要件F-06）
  *
  * 社内メールアドレスでの自己登録を受け付ける。
  * 登録は `POST /api/auth/register`（サーバー側）へ委ねる。
@@ -116,7 +116,7 @@ export function RegisterForm({ allowedDomain }: RegisterFormProps) {
           </p>
 
           <p className={styles.switch}>
-            {/* Next.jsのルーターキャッシュを避けるため <a> で遷移する（CLAUDE.md セクション8） */}
+            {/* Next.jsのルーターキャッシュを避けるため <a> で遷移する（コーディング規約） */}
             <a className={styles.link} href="/login">
               ログイン画面へ戻る
             </a>

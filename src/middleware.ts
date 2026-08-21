@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { checkEmailDomain } from '@/lib/auth/emailDomain';
 
 /**
- * 認証Middleware（TB-11・TS-06 / 要件F-06）
+ * 認証Middleware（要件F-06）
  *
  * 目的は3つ。
  *  1. Supabase Authのセッションを更新し、Cookieを最新に保つ
@@ -11,7 +11,7 @@ import { checkEmailDomain } from '@/lib/auth/emailDomain';
  *  2. 未ログインのアクセスを拒否する
  *     - API（/api/*）        … 401 をJSONで返す（UIがエラー表示できる形にする）
  *     - 画面（それ以外）     … ログイン画面へリダイレクトする
- *  3. **社内メールドメイン以外のセッションを拒否する（TS-06）**
+ *  3. **社内メールドメイン以外のセッションを拒否する**
  *     - API（/api/*）        … 403 をJSONで返す
  *     - 画面（それ以外）     … ログイン画面へ戻し、理由を表示する
  *
@@ -29,7 +29,7 @@ import { checkEmailDomain } from '@/lib/auth/emailDomain';
 /** ログイン画面のパス */
 const LOGIN_PATH = '/login';
 
-/** アカウント登録画面のパス（TS-07） */
+/** アカウント登録画面のパス */
 const REGISTER_PATH = '/register';
 
 /**
@@ -157,7 +157,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // ------------------------------------------------------------
-  // 社内メールドメインの検査（TS-06）
+  // 社内メールドメインの検査
   //
   // ここが実効的な防御線。ログイン画面を経由せずSupabaseから直接
   // セッションを取得された場合でも、このチェックで社内文書へ到達できない。

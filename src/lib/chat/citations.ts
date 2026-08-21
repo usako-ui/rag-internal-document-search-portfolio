@@ -1,7 +1,7 @@
 import type { MatchedChunk } from '@/lib/search/searchChunks';
 
 /**
- * 出典（citations）の組み立て（TB-08 / 要件F-04）
+ * 出典（citations）の組み立て（要件F-04）
  *
  * 回答の根拠として使用したチャンクから、UIへ表示する出典情報を作る。
  * 複数文書を参照した場合はすべての文書を返す（F-04 AC）。
@@ -22,7 +22,7 @@ export type Citation = {
   section: string | null;
   document_id: string;
   /**
-   * 根拠になった該当箇所の本文（Phase ENH TE-06で追加）。
+   * 根拠になった該当箇所の本文（改善フェーズ で追加）。
    * 出典クリック時のモーダルで原文を示すために使う。
    */
   content: string;

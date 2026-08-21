@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildLoginUrl } from '@/lib/auth/redirect';
 
 /**
- * 質問履歴画面（TE-07）
+ * 質問履歴画面
  *
  * 【画面保護（要件F-06）】
  * 履歴は「誰が何を聞いたか」が分かる個人データのため、

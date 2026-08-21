@@ -1,9 +1,9 @@
 import type { ChatRequest, ChatResponse } from '@/types/api';
 
 /**
- * チャットAPIのクライアント（TC-10・TC-12）
+ * チャットAPIのクライアント
  *
- * 呼び出し先は Worktree B が実装した `POST /api/chat`。
+ * 呼び出し先は 検索API側が実装した `POST /api/chat`。
  * 仕様は requirements.md セクション7で確定済みのため、
  * リクエスト・レスポンスの形をここで勝手に変えないこと。
  *
@@ -35,7 +35,7 @@ export class ChatApiError extends Error {
 /**
  * エラーレスポンスから利用者向けメッセージを取り出す。
  *
- * Q-26（Worktree B確定）：未認証のAPIアクセスには 401 が返る。
+ * 検索API側の仕様：未認証のAPIアクセスには 401 が返る。
  * この場合は「もう一度お試しください」では解決しないため、
  * 再ログインが必要であることを明示する。
  */
@@ -47,7 +47,7 @@ function toChatErrorMessage(rawBody: string, status: number): string {
   try {
     const parsed = JSON.parse(rawBody) as { error?: unknown };
     if (typeof parsed.error === 'string' && parsed.error.length > 0) {
-      // Worktree B が利用者向けに用意したメッセージをそのまま使う
+      // 検索API側が利用者向けに用意したメッセージをそのまま使う
       return parsed.error;
     }
   } catch {
@@ -71,7 +71,7 @@ function isChatResponse(value: unknown): value is ChatResponse {
 }
 
 /**
- * POST /api/chat（TC-10）
+ * POST /api/chat
  *
  * 質問を送り、回答・出典・`has_answer` を受け取る。
  * 回答生成には時間がかかる（非機能要件3-1：通常10秒以内）ため、
@@ -87,7 +87,7 @@ export async function postChat(question: string): Promise<ChatResponse> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      // 回答は毎回生成されるものなのでキャッシュしない（CLAUDE.md セクション8）
+      // 回答は毎回生成されるものなのでキャッシュしない（コーディング規約）
       cache: 'no-store',
       credentials: 'same-origin',
     });

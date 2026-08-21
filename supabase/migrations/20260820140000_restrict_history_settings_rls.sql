@@ -1,7 +1,7 @@
 -- ============================================================
 -- chat_histories / user_settings のRLSを社内メールドメインに限定する
 --
--- 対応：Phase DEL QAレビュー Q-51（MEDIUM）
+-- 対応：セキュリティレビューの指摘（MEDIUM）
 -- 前提：20260820100000_restrict_rls_to_internal_domain.sql
 --       （public.is_internal_user() と public.app_config を作成済み）
 --

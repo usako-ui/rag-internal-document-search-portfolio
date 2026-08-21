@@ -9,13 +9,13 @@ import type { ChatHistory, Citation } from '@/types/api';
 import { FileIcon, HistoryIcon, LoaderIcon, RefreshIcon } from '@/components/icons';
 
 /**
- * 質問履歴画面（TE-07）
+ * 質問履歴画面
  *
  * 左に履歴一覧、右に選択した履歴の質問・回答・出典を表示する。
- * 出典をクリックすると、チャット画面と同じ出典モーダル（TE-06）で
+ * 出典をクリックすると、チャット画面と同じ出典モーダルで
  * 該当箇所の本文を確認できる。
  *
- * 表示件数は設定画面の「履歴表示件数」がサーバー側で適用される（TE-10）。
+ * 表示件数は設定画面の「履歴表示件数」がサーバー側で適用される。
  */
 
 /** 日時を「2026/08/18 14:30」の形にする */
@@ -33,7 +33,7 @@ function formatDateTime(isoString: string): string {
   });
 }
 
-/** 出典1件の表示ラベルを組み立てる（Q-25：null の項目は出さない） */
+/** 出典1件の表示ラベルを組み立てる（null の項目は出さない） */
 function formatCitationLabel(citation: Citation): string {
   const section = citation.section ? ` ${citation.section}` : '';
   const page = citation.page ? `（${citation.page}）` : '';
@@ -168,7 +168,7 @@ export function HistoryView() {
               {selected.answer}
             </div>
 
-            {/* 出典が無い場合は出典エリアごと表示しない（CLAUDE.md セクション10） */}
+            {/* 出典が無い場合は出典エリアごと表示しない（UI/UX仕様） */}
             {selected.citations.length > 0 && (
               <div className={styles.citations}>
                 <div className={styles.citationsLabel}>出典：</div>
@@ -198,7 +198,7 @@ export function HistoryView() {
         )}
       </div>
 
-      {/* 出典モーダル（TE-06）。履歴からも根拠の原文を確認できる */}
+      {/* 出典モーダル。履歴からも根拠の原文を確認できる */}
       <CitationModal citation={openCitation} onClose={() => setOpenCitation(null)} />
     </div>
   );

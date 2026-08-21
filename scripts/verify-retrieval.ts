@@ -1,10 +1,10 @@
 /**
- * 検索API側（Worktree B）の検索処理の動作確認（TB-01〜TB-04）
+ * 検索API側の検索処理の動作確認
  *
  * 確認する内容：
- *  - クエリのNFKC正規化が効いていること（Q-18）
+ *  - クエリのNFKC正規化が効いていること
  *  - `match_chunks` RPCで上位チャンクが取得できること
- *  - 閾値0.62（Q-02）で文書外の質問が0件になること
+ *  - 閾値0.62で文書外の質問が0件になること
  *  - 「在宅勤務手当」で複数文書（リモートワーク規程・経費精算マニュアル）が取得できること
  *
  * 実行：npm run verify:retrieval
@@ -45,7 +45,7 @@ const NORMALIZATION_SAMPLES = [
 async function main() {
   const supabase = createSupabaseAdminClient();
 
-  console.log('【TB-01】クエリのNFKC正規化（Q-18）');
+  console.log('クエリのNFKC正規化');
   console.log('='.repeat(88));
   for (const sample of NORMALIZATION_SAMPLES) {
     const normalized = normalizeQuery(sample);
@@ -54,7 +54,7 @@ async function main() {
   }
 
   console.log('');
-  console.log(`【TB-02〜TB-04】類似検索（閾値 ${SIMILARITY_THRESHOLD} / 最大${MATCH_COUNT}件）`);
+  console.log(`【〜】類似検索（閾値 ${SIMILARITY_THRESHOLD} / 最大${MATCH_COUNT}件）`);
   console.log('='.repeat(88));
 
   let answerableOk = 0;
@@ -93,7 +93,7 @@ async function main() {
       if (matches.length > 0) answerableOk += 1;
     }
 
-    // 「在宅勤務手当」は複数文書から取得できることがTB-04の完了条件
+    // 「在宅勤務手当」は複数文書から取得できることが完了条件
     if (question.includes('在宅勤務手当')) {
       const documentNames = Array.from(new Set(matches.map((match) => match.document_name)));
       multiDocumentOk = documentNames.length >= 2;
@@ -109,11 +109,11 @@ async function main() {
   console.log('検証結果');
   console.log(`  記載あり質問で検索できた   : ${answerableOk}/${answerableTotal}`);
   console.log(`  記載なし質問で0件を返せた  : ${outOfScopeOk}/${outOfScopeTotal}`);
-  console.log(`  TB-04 複数文書からの取得   : ${multiDocumentOk ? 'OK' : 'NG'}`);
+  console.log(` 複数文書からの取得 : ${multiDocumentOk ? 'OK' : 'NG'}`);
 
   if (answerableOk < answerableTotal || outOfScopeOk < outOfScopeTotal || !multiDocumentOk) {
     console.log('');
-    console.log('※ 期待どおりでない項目がある。閾値（Q-02）の再調整を検討すること。');
+    console.log('※ 期待どおりでない項目がある。閾値の再調整を検討すること。');
     process.exit(1);
   }
 }

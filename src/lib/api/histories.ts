@@ -1,16 +1,16 @@
 import type { ChatHistory, Citation } from '@/types/api';
 
 /**
- * 質問履歴APIのクライアント（TE-07）
+ * 質問履歴APIのクライアント
  *
- * 呼び出し先は Phase ENH STEP 1 で追加した以下の2エンドポイント。
+ * 呼び出し先は 改善フェーズ STEP 1 で追加した以下の2エンドポイント。
  *
  *   GET  /api/histories … ChatHistory[]（作成日時の降順）
  *   POST /api/histories … { question, answer, citations } → 保存した1件
  *
  * 【エラー方針】
  * 「失敗しました」だけで終わらせず、原因と次に取るべき行動が分かる文言を返す
- * （CLAUDE.md セクション10）。
+ * （UI/UX仕様）。
  */
 
 const HISTORIES_ENDPOINT = '/api/histories';
@@ -56,7 +56,7 @@ export async function fetchHistories(limit?: number): Promise<ChatHistory[]> {
 
   try {
     response = await fetch(url, {
-      // 履歴は保存直後に最新が見えないと困るためキャッシュしない（CLAUDE.md セクション8）
+      // 履歴は保存直後に最新が見えないと困るためキャッシュしない（コーディング規約）
       cache: 'no-store',
       credentials: 'same-origin',
     });
@@ -82,7 +82,7 @@ export async function fetchHistories(limit?: number): Promise<ChatHistory[]> {
 }
 
 /**
- * POST /api/histories（回答受領後の自動保存・Q-39）
+ * POST /api/histories（回答受領後の自動保存）
  *
  * 【重要】保存の失敗で質問体験を止めないこと。
  * 履歴は補助機能であり、保存に失敗しても回答自体は表示できているため、

@@ -378,7 +378,7 @@ flowchart TD
 | 2 | 自分宛の確認メールを開き、認証済みトークンを得る | 効かない |
 | 3 | `https://<project>.supabase.co/rest/v1/document_chunks?select=*` を直接呼ぶ | 効かない |
 
-**【重要】この経路はPhase DELのレビューで実際に検証済みです。**
+**【重要】この経路は納品フェーズのレビューで実際に検証済みです。**
 MVP初期のRLSは `to authenticated using (true)`（＝Supabaseにログイン済みなら誰でも全文書を読める）で、
 社外ドメインのトークンで全5文書・16チャンクが取得できる状態でした。
 
@@ -535,7 +535,7 @@ match_chunks(query_embedding vector(768), match_threshold float, match_count int
 | ベクトル索引 | HNSW（コサイン距離） | 総当たりせずに近いベクトルを探せる |
 | 類似度閾値 | **0.62** | 正解チャンクの類似度は平均0.68で、0.7では正解が弾かれる。実測に基づく値（[精度検証レポート](validation/rag-accuracy-report.md)） |
 | 取得チャンク数 | 既定5件（設定画面で3 / 5 / 10） | 多いほど材料は増えるが、無関係な文脈が混ざる |
-| 回答生成モデル | `gemini-2.5-flash` | 模擬案件のコスト都合。本番採用は未確定 |
+| 回答生成モデル | `gemini-2.5-flash` | 検証段階のコスト都合で選定。本番採用は未確定 |
 
 **【重要】** 類似度閾値はハルシネーション抑制の要です。
 下げると文書外の質問が検索を通過するため、変更は精度検証の結果を根拠に行ってください。
@@ -560,7 +560,7 @@ match_chunks(query_embedding vector(768), match_threshold float, match_count int
 | **Supabase（PostgreSQL + pgvector）** | 認証・DB・ベクトル検索を1サービスで賄える。**東京リージョンを選択できる**。RLSでDB自身にアクセス制御を持たせられる | 専用ベクトルDB（Pinecone / Qdrant）＋別の認証基盤。構成要素が増え、リージョン管理も分散する |
 | **pgvector（HNSW索引）** | 文書本文とベクトルを同じDBに置けるため、検索1回で出典情報まで取得できる | 専用ベクトルDB。文書メタデータとの結合に往復が増える |
 | **Embedding 768次元** | pgvectorのHNSW索引は最大2000次元。768なら索引が使える | 3072次元（既定値）。精度は上がりうるが索引が張れず検索が遅くなる |
-| **Gemini API（`gemini-2.5-flash`）** | **模擬案件のAPIコスト節約のため**。本番採用は未確定 | Claude API / Azure OpenAI（日本リージョン）/ 国内ホスティング。詳細は [phase2-proposal.md](phase2-proposal.md) 5章 |
+| **Gemini API（`gemini-2.5-flash`）** | **検証段階のAPIコスト節約のため**。本番採用は未確定 | Claude API / Azure OpenAI（日本リージョン）/ 国内ホスティング。詳細は [phase2-proposal.md](phase2-proposal.md) 5章 |
 | **pdf-parse** | ページ単位でテキストを取り出せるため、出典のページ番号を正確に示せる | LangChain の document_loaders。依存が増える割にMVPでは利点が少ない |
 | **CSS Modules** | クラス名の衝突を防げる。追加の依存やビルド設定が不要 | Tailwind CSS / CSS-in-JS。UX仕様書のデザイントークンをCSS変数で一元管理する方針と相性が良いのはCSS変数＋CSS Modules |
 | **Vercel** | Next.jsの標準的なデプロイ先。設定が最小限で済む | AWS Amplify / Cloud Run。**本番でリージョン要件が出た場合は再検討が必要** |

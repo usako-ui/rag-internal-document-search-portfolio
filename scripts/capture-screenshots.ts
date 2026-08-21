@@ -1,5 +1,5 @@
 /**
- * 画面スクリーンショットの自動撮影（Phase DEL）
+ * 画面スクリーンショットの自動撮影（納品フェーズ）
  *
  * 納品資料（README・運用手順書）へ埋め込む画面キャプチャを、
  * 実際に動いているアプリから撮影する。
@@ -99,6 +99,71 @@ const SKIP_CHAT_ANSWER = process.env.SKIP_CHAT_ANSWER === '1';
  */
 const SKIP_UPLOAD_FLOW = process.env.SKIP_UPLOAD_FLOW === '1';
 
+/**
+ * 撮り直す画面を絞り込む（任意）。
+ *
+ * 未指定なら全17枚を撮る。ファイル名か、その先頭一致で指定する。
+ * カンマ区切りで複数指定できる。
+ *
+ * 【なぜ必要か】
+ * 1枚だけ直したいときに全17枚を撮り直すと、Gemini APIの無料枠を消費し、
+ * 変更していない画像まで差分になってレビューしづらくなる。
+ *
+ * 実行例：
+ *   ONLY=01 npm run capture:screenshots                    … ランディングのみ
+ *   ONLY=01-landing.png npm run capture:screenshots        … 同上（ファイル名指定）
+ *   ONLY=08,09 npm run capture:screenshots                 … 文書管理と文書検索
+ */
+const ONLY = (process.env.ONLY ?? '')
+  .split(',')
+  .map((value) => value.trim())
+  .filter((value) => value.length > 0);
+
+/** この画面を撮る対象かどうか。ONLY 未指定なら常に true */
+function isWanted(fileName: string): boolean {
+  if (ONLY.length === 0) return true;
+
+  return ONLY.some((value) => fileName === value || fileName.startsWith(value));
+}
+
+/**
+ * 指定した画面のうち1枚でも撮る対象があるか。
+ *
+ * ログイン・PDF取り込みなど「撮影の前準備」を丸ごと飛ばす判定に使う。
+ * 撮らない画面のために毎回ログインすると、その分だけ時間と失敗の機会が増える。
+ */
+function isAnyWanted(fileNames: string[]): boolean {
+  return fileNames.some(isWanted);
+}
+
+/** ログイン後に撮る画面 */
+const AUTHENTICATED_SHOTS = [
+  '04-dashboard.png',
+  '05-chat.png',
+  '06-chat-answer.png',
+  '07-citation-modal.png',
+  '08-documents.png',
+  '09-search.png',
+  '10-histories.png',
+  '11-settings.png',
+  '13-mobile-chat.png',
+  '14-documents-actions.png',
+  '15-update-dialog.png',
+  '16-delete-dialog.png',
+  '17-upload-progress.png',
+];
+
+/** Gemini APIを実際に呼ぶ2枚 */
+const CHAT_ANSWER_SHOTS = ['06-chat-answer.png', '07-citation-modal.png'];
+
+/** 資料更新の操作フローで撮る画面（PDFの取り込みを伴う） */
+const UPDATE_FLOW_SHOTS = [
+  '14-documents-actions.png',
+  '15-update-dialog.png',
+  '16-delete-dialog.png',
+  '17-upload-progress.png',
+];
+
 /** 17の撮影に使うPDF。取り込み後に削除する */
 const SAMPLE_PDF_PATH = resolve(process.cwd(), 'data/test/sample-test.pdf');
 
@@ -133,6 +198,24 @@ function findChrome(): string {
  * ページ遷移で元に戻っても次の撮影前にまた適用される。
  */
 const MASKED_EMAIL = 'user@example.co.jp';
+
+/**
+ * 点滅カーソルを撮影のあいだだけ隠す。
+ *
+ * ランディングのチャットデモは、回答を出したあとも入力カーソルを
+ * `blink 0.8s step-end infinite` で点滅させ続ける。
+ * このため撮影タイミングによって「文末にカーソルが写る／写らない」が変わり、
+ * 撮り直すたびに絵が変わってしまう（実際に写り込んだことがある）。
+ *
+ * 表示・非表示のどちらで撮れるかを運任せにしないため、
+ * 撮影の直前に確定的に隠す。アプリ側の実装は変更しない。
+ */
+async function hideBlinkingCaret(page: Page) {
+  await page.addStyleTag({
+    // CSS Modules のクラス名は `Landing_typingCursor__ハッシュ` になるため部分一致で指定する
+    content: '[class*="typingCursor"] { visibility: hidden !important; }',
+  });
+}
 
 async function maskSensitiveText(page: Page, email: string) {
   await page.evaluate(
@@ -169,11 +252,19 @@ function wait(ms: number): Promise<void> {
  * 画面内に収まる画面で使うと余白が増えて見づらくなるため、必要な画面だけ true にする。
  */
 async function shoot(page: Page, fileName: string, options: { fullPage?: boolean } = {}) {
+  // ONLY で絞り込まれている場合、対象外は上書きしない
+  if (!isWanted(fileName)) {
+    console.log(`  スキップ: ${fileName}（ONLYの対象外）`);
+    return;
+  }
+
   // 遅延読み込みの画像・フォントが出そろうのを待つ
   await wait(700);
 
   // 撮影の直前にマスクする。ページ遷移で元へ戻るため、毎回実行する必要がある
   await maskSensitiveText(page, process.env.TEST_USER_EMAIL ?? '');
+
+  await hideBlinkingCaret(page);
 
   await page.screenshot({
     path: resolve(OUTPUT_DIR, fileName) as `${string}.png`,
@@ -190,6 +281,12 @@ async function shoot(page: Page, fileName: string, options: { fullPage?: boolean
  * 多い画面では下が切れる。表示されている内容から必要な高さを測って合わせる。
  */
 async function shootFitted(page: Page, path: string, fileName: string) {
+  // 対象外なら画面遷移もしない（撮らない画面へ移動する意味がない）
+  if (!isWanted(fileName)) {
+    console.log(`  スキップ: ${fileName}（ONLYの対象外）`);
+    return;
+  }
+
   await page.setViewport(DESKTOP_VIEWPORT);
   await goto(page, path);
 
@@ -398,6 +495,15 @@ async function captureAll(browser: Browser) {
   await guestContext.close();
 
   // ------------------------------------------------------------
+  // ログイン後の画面を1枚も撮らないなら、ここで終了する。
+  // ランディングだけ撮り直すのに検証用ユーザーを用意する必要が無くなる
+  // ------------------------------------------------------------
+  if (!isAnyWanted(AUTHENTICATED_SHOTS)) {
+    console.log('  ログイン後の画面はすべてONLYの対象外のためスキップします');
+    return;
+  }
+
+  // ------------------------------------------------------------
   // 2. ログイン後の画面
   // ------------------------------------------------------------
   console.log('\n[2/3] ログイン後の画面');
@@ -422,7 +528,9 @@ async function captureAll(browser: Browser) {
   // Gemini無料枠は毎分5回・1日20回のため、質問は1回だけにする。
   // 撮り直すときも連続実行しないこと
   // ------------------------------------------------------------
-  if (SKIP_CHAT_ANSWER) {
+  if (!isAnyWanted(CHAT_ANSWER_SHOTS)) {
+    console.log('  06・07はスキップします（ONLYの対象外）');
+  } else if (SKIP_CHAT_ANSWER) {
     console.log('  06・07はスキップします（SKIP_CHAT_ANSWER=1）');
   } else {
     // aria-label は実装側で明示している値のため、CSS変更の影響を受けない
@@ -457,7 +565,11 @@ async function captureAll(browser: Browser) {
   await shootFitted(page, '/documents', '08-documents.png');
 
   // 資料更新の操作フロー（14〜17）
-  await captureUpdateFlow(page);
+  if (isAnyWanted(UPDATE_FLOW_SHOTS)) {
+    await captureUpdateFlow(page);
+  } else {
+    console.log('  14〜17はスキップします（ONLYの対象外）');
+  }
 
   await shootFitted(page, '/search', '09-search.png');
   await shootFitted(page, '/histories', '10-histories.png');
@@ -483,8 +595,15 @@ async function main() {
 
   // サーバーが起動しているかを先に確かめる。
   // 起動していない場合、Puppeteerのタイムアウトまで待たされて原因が分かりにくい
+  //
+  // 【タイムアウトを長めに取る理由】
+  // 開発サーバーは最初のリクエストで対象ページをコンパイルするため、
+  // 起動直後の1回目は数十秒かかることがある。短く切ると
+  // 「起動しているのに接続できません」と誤って案内してしまう（実際に発生した）。
+  // サーバーが本当に起動していなければ待たずに接続拒否で落ちるため、
+  // ここを延ばしても未起動の検知は遅くならない。
   try {
-    const response = await fetch(BASE_URL, { signal: AbortSignal.timeout(5000) });
+    const response = await fetch(BASE_URL, { signal: AbortSignal.timeout(60_000) });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
   } catch (error) {
     throw new Error(

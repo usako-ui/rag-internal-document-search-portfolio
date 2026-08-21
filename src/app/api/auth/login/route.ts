@@ -4,7 +4,7 @@ import { checkEmailDomain } from '@/lib/auth/emailDomain';
 import { toLoginErrorMessage, toLoginErrorStatus } from '@/lib/auth/loginErrors';
 
 /**
- * POST /api/auth/login（TS-06 / 要件F-06）
+ * POST /api/auth/login（要件F-06）
  *
  * ログイン処理をサーバー側で行う唯一のエンドポイント。
  * Supabaseへ認証を投げる**前に**社内メールドメインを検証し、

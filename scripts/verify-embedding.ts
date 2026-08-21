@@ -1,5 +1,5 @@
 /**
- * Embedding生成と検索品質の確認（TA-04）
+ * Embedding生成と検索品質の確認
  *
  * サンプル5文書を実際にチャンク化してEmbeddingを生成し、
  * 質問に対して意味的に正しいチャンクが上位に来るかを確認する。
@@ -26,7 +26,7 @@ loadEnv();
 
 const SAMPLE_DIR = resolve(process.cwd(), 'data/sample-pdfs');
 
-/** 確認用の質問。case3-test-questions.csv の想定に近いものを選んでいる */
+/** 確認用の質問。評価データの想定に近いものを選んでいる */
 const TEST_QUERIES = [
   { question: '在宅勤務手当はいくらですか？', expect: 'リモートワーク規程 / 経費精算マニュアル' },
   { question: '有給休暇は入社してどれくらいで付与されますか？', expect: '就業規則' },
@@ -100,7 +100,7 @@ async function main() {
 
   // 3. 質問ごとに類似チャンクを検索する（クエリ側は RETRIEVAL_QUERY）
   for (const { question, expect } of TEST_QUERIES) {
-    // クエリにも文書側と同じNFKC正規化を適用する（Q-18）
+    // クエリにも文書側と同じNFKC正規化を適用する
     const queryVector = await generateEmbedding(question.normalize('NFKC'), 'RETRIEVAL_QUERY');
 
     const ranked = chunks
@@ -124,7 +124,7 @@ async function main() {
   console.log('='.repeat(78));
   console.log('補足: スコアはコサイン類似度（1に近いほど類似）。');
   console.log('      文書に記載のない質問で最高スコアが低くなることが、');
-  console.log('      ハルシネーション抑制の閾値（Q-02・初期値0.7）を決める根拠になる。');
+  console.log('      ハルシネーション抑制の閾値（初期値0.7）を決める根拠になる。');
 
   if (!dimensionsOk || !normalizedOk) {
     process.exit(1);

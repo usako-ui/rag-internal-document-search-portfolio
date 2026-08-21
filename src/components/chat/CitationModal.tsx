@@ -6,7 +6,7 @@ import type { Citation } from '@/types/api';
 import { FileIcon, XIcon } from '@/components/icons';
 
 /**
- * 出典モーダル（TE-06）
+ * 出典モーダル
  *
  * 出典リンク・関連文書カードを押したときに、
  * 文書名・ページ・該当箇所の本文を表示する。
@@ -45,7 +45,7 @@ export function CitationModal({ citation, onClose }: CitationModalProps) {
 
   if (!citation) return null;
 
-  // 該当箇所の本文。TE-06より前に保存された履歴には content が無いため、
+  // 該当箇所の本文。出典モーダルの実装より前に保存された履歴には content が無いため、
   // 空のときは「表示できない」ことと理由が分かる案内を出す（空欄のまま見せない）
   const hasContent = citation.content.trim().length > 0;
 
@@ -94,7 +94,7 @@ export function CitationModal({ citation, onClose }: CitationModalProps) {
             </div>
           )}
 
-          {/* Q-25：page / section は null になり得るため、値があるものだけ表示する */}
+          {/* page / section は null になり得るため、値があるものだけ表示する */}
           {(citation.page || citation.section) && (
             <div className={styles.meta}>
               {citation.page && (

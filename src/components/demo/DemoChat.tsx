@@ -19,7 +19,7 @@ import { BookOpenIcon, LoaderIcon, MessageSquareIcon, SettingsIcon } from '@/com
  *  - 会話履歴はブラウザ内に保存し、タブを閉じると消える
  *
  * 吹き出し（MessageList・AiMessage）と入力バー（InputBar）は本番と同じものを流用する。
- * 出典モーダル（TE-06）もそのまま動くため、デモでも根拠の原文を確認できる。
+ * 出典モーダルもそのまま動くため、デモでも根拠の原文を確認できる。
  */
 
 /** APIキー入力画面のパス */

@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildLoginUrl } from '@/lib/auth/redirect';
 
 /**
- * 文書を検索する画面（`/search` / 要件F-09 ＋ TE-08）
+ * 文書を検索する画面（`/search` / 要件F-09 ＋）
  *
  * 管轄部署・キーワードで登録済み文書を絞り込み、詳細を確認する。
  *

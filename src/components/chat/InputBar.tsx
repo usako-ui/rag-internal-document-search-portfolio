@@ -14,7 +14,7 @@ type InputBarProps = {
 };
 
 /**
- * 質問入力バー（TC-07）
+ * 質問入力バー
  *
  * - Enterで送信・Shift+Enterで改行
  * - 入力量に応じてtextareaが自動伸長する（最大100px）

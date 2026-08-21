@@ -3,7 +3,7 @@ import type { MatchedChunk } from '@/lib/search/searchChunks';
 import { NO_ANSWER_TEXT } from '@/lib/chat/constants';
 
 /**
- * Gemini APIによるRAG回答生成（TB-05〜TB-07 / 要件F-03）
+ * Gemini APIによるRAG回答生成（要件F-03）
  *
  * 検索で取得したチャンクだけを根拠に回答を生成する。
  * 文書に根拠がない場合は推測せず「該当なし」を返すことが最重要要件
@@ -13,8 +13,8 @@ import { NO_ANSWER_TEXT } from '@/lib/chat/constants';
 /**
  * 回答生成に使用するモデル。
  *
- * Gemini採用は模擬案件のAPIコスト節約が理由であり、本番採用は未確定
- * （CLAUDE.md セクション5）。モデルを変更する場合は必ず確認を取ること。
+ * Gemini採用は検証段階のAPIコスト節約が理由であり、本番採用は未確定
+ * （技術選定方針）。モデルを変更する場合は必ず確認を取ること。
  */
 export const ANSWER_MODEL = 'gemini-2.5-flash';
 
@@ -31,7 +31,7 @@ export const NO_ANSWER_MESSAGE = NO_ANSWER_TEXT;
  * Gemini APIの利用制限（429）に達したときの文言。
  *
  * 汎用の「もう一度お試しください」だと、利用者は原因も待つべき時間も分からない。
- * CLAUDE.md セクション10「エラー時は原因と次の行動を示す」に対応するため専用文言を用意する。
+ * UI/UX仕様「エラー時は原因と次の行動を示す」に対応するため専用文言を用意する。
  */
 export const RATE_LIMIT_MESSAGE =
   'APIの利用制限に達しました。1分ほど待ってから再度お試しください。';
@@ -73,7 +73,7 @@ export type GeneratedAnswer = {
 };
 
 /**
- * システムプロンプト（TB-06）。
+ * システムプロンプト。
  *
  * 「提供文書のみを根拠に回答する」「文書外は該当なしを返す」を徹底させる。
  * ここを緩めると、モデルが一般知識で回答してしまい社内文書検索として成立しない。
@@ -231,7 +231,7 @@ function parsePayload(text: string | undefined): AnswerPayload {
 }
 
 /**
- * 回答の長さ指示（設定画面「回答の最大文字数」・TE-10）。
+ * 回答の長さ指示（設定画面「回答の最大文字数」）。
  *
  * 文量の目安だけを変え、「文書のみを根拠にする」ルールには一切触れない。
  * ここでハルシネーション抑制のルールを緩めると最重要要件が崩れるため。

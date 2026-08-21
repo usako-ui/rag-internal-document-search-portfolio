@@ -18,7 +18,7 @@ import { CHAT_PATH, NEW_CHAT_PARAM, getNavRoute } from '@/lib/navigation/routes'
 /**
  * チャット画面のレイアウトと会話状態を束ねるコンポーネント。
  *
- * チャットは `POST /api/chat`（Worktree B実装）を呼び出す（TC-10）。
+ * チャットは `POST /api/chat`（検索API側実装）を呼び出す。
  * 受け取った ChatResponse はそのまま AssistantMessage として保持し、
  * 表示（回答→出典→関連文書→フィードバックの順）は AiMessage が担当する。
  *
@@ -73,12 +73,12 @@ export function AppShell({ userEmail }: AppShellProps) {
   };
 
   /**
-   * 質問を送信する（TC-10・TC-11・TC-12）。
+   * 質問を送信する。
    *
    * 1. 質問を吹き出しとして即座に追加する（送信できたことをすぐ伝える）
-   * 2. ローディングを出し、入力を無効化する（TC-11）
+   * 2. ローディングを出し、入力を無効化する
    * 3. `POST /api/chat` の応答を AI 吹き出しとして追加する
-   * 4. 失敗したらエラー吹き出しを出し、同じ質問を再送信できるようにする（TC-12）
+   * 4. 失敗したらエラー吹き出しを出し、同じ質問を再送信できるようにする
    *
    * `has_answer: false` のときの出典エリア非表示は AiMessage 側で判定している。
    */
@@ -106,7 +106,7 @@ export function AppShell({ userEmail }: AppShellProps) {
         },
       ]);
 
-      // 履歴の自動保存（TE-03・Q-39）。
+      // 履歴の自動保存。
       // 保存に失敗しても回答は表示できているため、質問体験は止めない
       // （UX優先順位1位「質問しやすい」を守る）。原因追跡のためログには残す。
       void saveHistory({
@@ -153,7 +153,7 @@ export function AppShell({ userEmail }: AppShellProps) {
    * 「新しい質問」だけはこの画面での操作なのでその場でリセットし、
    * それ以外は各画面へ遷移する。
    * `window.location.href` を使うのはNext.jsのルーターキャッシュ回避のため
-   * （CLAUDE.md セクション8）。
+   * （コーディング規約）。
    */
   const handleNavChange = (id: NavId) => {
     if (id === 'chat') {

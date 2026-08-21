@@ -1,9 +1,9 @@
 import type { DocumentSummary, UploadDocumentResponse } from '@/types/api';
 
 /**
- * 文書APIのクライアント（TC-13・TC-15・TC-16）
+ * 文書APIのクライアント
  *
- * 呼び出し先は Worktree A が実装した以下の2エンドポイント。
+ * 呼び出し先は 文書取り込み側が実装した以下の2エンドポイント。
  * 仕様は requirements.md セクション7で確定済みのため、
  * リクエスト・レスポンスの形をここで勝手に変えないこと。
  *
@@ -21,7 +21,7 @@ import type { DocumentSummary, UploadDocumentResponse } from '@/types/api';
 const DOCUMENTS_ENDPOINT = '/api/documents';
 
 /**
- * 文書一覧の絞り込み条件（TE-08）。
+ * 文書一覧の絞り込み条件。
  * 空文字・未指定は「絞り込みなし」を意味する。
  */
 export type DocumentFilters = {
@@ -50,7 +50,7 @@ function buildDocumentsUrl(filters: DocumentFilters): string {
   return query.length > 0 ? `${DOCUMENTS_ENDPOINT}?${query}` : DOCUMENTS_ENDPOINT;
 }
 
-/** multipart/form-data のフィールド名（Worktree A の route.ts と一致させること） */
+/** multipart/form-data のフィールド名（文書取り込み側の route.ts と一致させること） */
 const FILE_FIELD_NAME = 'file';
 
 /** 差し替え対象の文書IDを送るフィールド名（サーバー側 route.ts と一致させること） */
@@ -132,7 +132,7 @@ function extractErrorMessage(rawBody: string, status: number, context: ErrorCont
   try {
     const parsed = JSON.parse(rawBody) as { error?: unknown };
     if (typeof parsed.error === 'string' && parsed.error.length > 0) {
-      // サーバー側（Worktree A）が利用者向けに用意したメッセージをそのまま使う
+      // サーバー側（文書取り込み側）が利用者向けに用意したメッセージをそのまま使う
       return parsed.error;
     }
   } catch {
@@ -151,7 +151,7 @@ type UploadOptions = {
    */
   onUploadComplete?: () => void;
   /**
-   * 差し替える対象の文書ID（資料更新 F-08 / Q-50）。
+   * 差し替える対象の文書ID（資料更新 F-08）。
    *
    * 文書管理画面の「更新」から呼ぶときに渡す。
    * 渡さない場合、サーバーは「PDFの1行目から推定した文書名」が一致する
@@ -161,7 +161,7 @@ type UploadOptions = {
 };
 
 /**
- * POST /api/documents（TC-13）
+ * POST /api/documents
  *
  * fetch ではなく XMLHttpRequest を使っている。
  * fetch は「ファイルを送り終えた瞬間」を検知できず、F-07の
@@ -179,7 +179,7 @@ export function uploadDocument(file: File, options: UploadOptions = {}): Promise
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', DOCUMENTS_ENDPOINT);
-    // 認証Cookieを送る（TB-11の認証Middleware導入後に必要）
+    // 認証Cookieを送る（認証Middleware導入後に必要）
     xhr.withCredentials = true;
 
     xhr.upload.onprogress = (event) => {
@@ -235,10 +235,10 @@ export function uploadDocument(file: File, options: UploadOptions = {}): Promise
 }
 
 /**
- * GET /api/documents（TC-16）
+ * GET /api/documents
  *
  * 取り込み状態（status）は刻々と変わるため、必ず `no-store` で最新を取得する
- * （CLAUDE.md セクション8）。
+ * （コーディング規約）。
  */
 export async function fetchDocuments(
   filters: DocumentFilters = {}

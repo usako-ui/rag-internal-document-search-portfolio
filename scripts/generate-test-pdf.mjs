@@ -1,7 +1,7 @@
 /**
- * 開発用：pdf-parse の動作確認に使うテストPDFを生成する（TA-01）
+ * 開発用：pdf-parse の動作確認に使うテストPDFを生成する
  *
- * 実際の社内文書PDF（サンプル5文書）がまだ配置されていないため（tasks.md Q-12）、
+ * 実際の社内文書PDF（サンプル5文書）がまだ配置されていないため、
  * テキスト抽出とページ分割の動作を確認するための代替PDFをここで作る。
  * 実PDFが届いたらこのスクリプトは不要になる。
  *
@@ -111,7 +111,7 @@ async function main() {
     console.warn(
       '日本語フォントを埋め込めないため英字フォントで生成します（WindowsのTTC形式は pdf-lib 非対応）。'
     );
-    console.warn('日本語PDFからの抽出確認は、サンプルPDF到着後に行ってください（tasks.md Q-12）。');
+    console.warn('日本語PDFからの抽出確認は、サンプルPDF到着後に行ってください。');
   }
 
   PAGES.forEach((pageContent, index) => {

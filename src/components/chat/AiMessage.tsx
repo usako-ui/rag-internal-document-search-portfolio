@@ -16,7 +16,7 @@ import {
 /**
  * 出典1件の表示ラベルを組み立てる（例：リモートワーク規程 第3条（p.3））
  *
- * Q-25：`page` / `section` は null が返ることがある。
+ * 補足：`page` / `section` は null が返ることがある。
  * null のときは項目ごと省き、「（p.）」のような中身のないラベルを出さない。
  */
 function formatCitationLabel(citation: Citation): string {
@@ -26,9 +26,9 @@ function formatCitationLabel(citation: Citation): string {
 }
 
 /**
- * AIの回答吹き出し（TC-04・TC-05・TC-06）
+ * AIの回答吹き出し
  *
- * 表示順序はCLAUDE.md セクション10で厳守と定められている：
+ * 表示順序はUI/UX仕様で厳守と定められている：
  *   1. 回答本文 → 2. 根拠・出典 → 3. 関連文書カード → 4. フィードバック
  *
  * has_answer が false（社内文書に根拠がない）場合は、
@@ -42,7 +42,7 @@ export function AiMessage({ message }: { message: AssistantMessage }) {
   const [feedback, setFeedback] = useState<'helpful' | 'not-helpful' | null>(null);
   const [bookmarked, setBookmarked] = useState(false);
 
-  // 出典モーダル（TE-06）で表示中の出典。null なら閉じている
+  // 出典モーダルで表示中の出典。null なら閉じている
   const [openCitation, setOpenCitation] = useState<Citation | null>(null);
 
   // 出典を表示するのは「根拠あり」かつ「出典が1件以上ある」場合のみ
@@ -98,7 +98,7 @@ export function AiMessage({ message }: { message: AssistantMessage }) {
                     {citation.document_name}
                     {citation.section ? ` ${citation.section}` : ''}
                   </span>
-                  {/* Q-25：page が null のときは参照箇所の行ごと出さない */}
+                  {/* page が null のときは参照箇所の行ごと出さない */}
                   {citation.page && <span className={styles.docRef}>{citation.page}</span>}
                 </span>
               </button>
@@ -149,7 +149,7 @@ export function AiMessage({ message }: { message: AssistantMessage }) {
         <div className={styles.time}>{time}</div>
       </div>
 
-      {/* 出典モーダル（TE-06）。出典リンク・関連文書カードのどちらからでも開く */}
+      {/* 出典モーダル。出典リンク・関連文書カードのどちらからでも開く */}
       <CitationModal citation={openCitation} onClose={() => setOpenCitation(null)} />
     </div>
   );

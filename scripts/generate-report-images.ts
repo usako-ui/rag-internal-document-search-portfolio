@@ -1,5 +1,5 @@
 /**
- * 精度検証レポート用のSVG画像を生成する（Phase DEL）
+ * 精度検証レポート用のSVG画像を生成する（納品フェーズ）
  *
  * `docs/validation/rag-accuracy-report.md` へ埋め込む図版を、
  * 検証結果の数値からコードで生成する。
@@ -16,7 +16,7 @@
  *  - ファイルサイズが小さく、差分もGitで追える
  *
  * 【アイコンについて】
- * CLAUDE.md セクション10のルールに従い、Lucide Icons のパスのみを使う。
+ * UI/UX仕様のルールに従い、Lucide Icons のパスのみを使う。
  * 絵文字・イラストは使用しない。
  *
  * 実行：npm run generate:report-images
@@ -29,7 +29,7 @@ import { resolve } from 'node:path';
 const OUTPUT_DIR = resolve(process.cwd(), 'docs/validation/images');
 
 /**
- * デザイントークン（CLAUDE.md セクション10のカラートークンと一致させること）。
+ * デザイントークン（UI/UX仕様のカラートークンと一致させること）。
  * 画面と資料で色が食い違うと、同じ製品に見えなくなる。
  */
 const COLOR = {

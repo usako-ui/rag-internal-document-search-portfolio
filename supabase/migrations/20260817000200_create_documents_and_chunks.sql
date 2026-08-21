@@ -1,11 +1,10 @@
 -- ============================================================
 -- 初期DBスキーマ：documents / document_chunks
 --
--- 対応タスク：T-01-07
--- 対応要件：requirements.md セクション7（Worktree間の境界定義）
+-- 対応要件：requirements.md セクション7（実装境界の定義）
 --
--- 【重要】このスキーマを変更できるのは Worktree A（Agent A）のみ。
---         Worktree B・C は参照のみで、変更してはいけない。
+-- 【重要】このスキーマを変更できるのは 文書取り込み担当のみ。
+--         検索API側・UI側は参照のみで、変更してはいけない。
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -37,7 +36,7 @@ create table if not exists public.document_chunks (
   id          uuid primary key default gen_random_uuid(),
   document_id uuid not null references public.documents(id) on delete cascade,
   content     text not null,                        -- チャンクテキスト
-  embedding   extensions.vector(768),               -- Gemini Embedding（Q-06：768次元で確定）
+  embedding   extensions.vector(768),               -- Gemini Embedding（768次元で確定）
   chunk_index int  not null,                        -- 文書内でのチャンク順序（0始まり）
   created_at  timestamptz not null default now()
 );
@@ -63,7 +62,7 @@ create index if not exists document_chunks_embedding_idx
 -- ------------------------------------------------------------
 -- RLS（行レベルセキュリティ）の基本設定
 --
--- 方針（CLAUDE.md セクション7）：
+-- 方針（セキュリティ要件）：
 --   - 本格的な部署別アクセス制御は Phase 2。MVPでは「基本設定」のみ行う
 --   - 未ログインユーザーは文書・チャンクを一切参照できない
 --   - 書き込み（取り込み処理）はサーバーサイドで SUPABASE_SERVICE_ROLE_KEY を使う。

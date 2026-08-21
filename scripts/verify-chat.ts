@@ -1,12 +1,12 @@
 /**
- * 回答生成・出典組み立ての動作確認（TB-05〜TB-08・TB-10）
+ * 回答生成・出典組み立ての動作確認
  *
  * `/api/chat` と同じ処理（検索 → 回答生成 → 出典組み立て）をHTTPを介さずに実行し、
  * 以下を確認する。
  *  - 文書に記載がある質問へ、文書を根拠に日本語で回答できること（F-03）
  *  - 出典（文書名・ページ・参照箇所）が返ること（F-04）
  *  - 文書に記載がない質問で「該当する情報を社内文書から確認できませんでした。」
- *    ＋ citations:[] ＋ has_answer:false になること（F-03 AC・TB-10）
+ *    ＋ citations:[] ＋ has_answer:false になること（F-03 AC）
  *
  * 実行：npm run verify:chat
  */
@@ -33,7 +33,7 @@ const TEST_QUESTIONS: { question: string; expect: string; outOfScope?: boolean }
 async function main() {
   const supabase = createSupabaseAdminClient();
 
-  console.log('【TB-05〜TB-08・TB-10】回答生成・出典・ハルシネーション抑制');
+  console.log('【〜・】回答生成・出典・ハルシネーション抑制');
   console.log('='.repeat(88));
 
   let answeredOk = 0;
@@ -91,7 +91,7 @@ async function main() {
 
   if (answeredOk < answeredTotal || citationOk < answeredTotal || hallucinationOk < hallucinationTotal) {
     console.log('');
-    console.log('※ 期待どおりでない項目がある。プロンプト（TB-06）または閾値（Q-02）を見直すこと。');
+    console.log('※ 期待どおりでない項目がある。プロンプトまたは閾値を見直すこと。');
     process.exit(1);
   }
 }

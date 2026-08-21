@@ -31,7 +31,7 @@ import {
  *
  * 【更新について】
  * MVPで確定しているAPIは POST /api/documents（PDFを取り込む）のみで、
- * 「既存文書を差し替える」専用エンドポイントは定義されていない（Q-28）。
+ * 「既存文書を差し替える」専用エンドポイントは定義されていない。
  * そのため更新は「確認ダイアログ → PDFを選び直す → 取り込み直す」形にしている。
  *
  * 【削除について】
@@ -104,7 +104,7 @@ export function DocumentsView() {
     if (!file || !target) return;
 
     // IDも渡す。名前だけだと、改訂でPDFのタイトル行が変わったときに
-    // 別文書として登録され、旧版が残ってしまう（Q-50）
+    // 別文書として登録され、旧版が残ってしまう
     library.startUpload(file, {
       replacesDocumentName: target.name,
       replacesDocumentId: target.id,
@@ -123,7 +123,7 @@ export function DocumentsView() {
     try {
       await library.removeDocument(target.id);
     } catch (error) {
-      // 「削除に失敗しました」だけで終わらせない（CLAUDE.md セクション10）。
+      // 「削除に失敗しました」だけで終わらせない（UI/UX仕様）。
       // APIが返す利用者向けメッセージには、次に取るべき行動が書かれている
       setDeleteErrorMessage(
         error instanceof DocumentApiError

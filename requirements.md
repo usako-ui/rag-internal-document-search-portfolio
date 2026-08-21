@@ -461,9 +461,9 @@ MVPではSOC2完全準拠を保証しません。SOC2は技術的対策だけで
 |---|---|
 | 検索方式 | コサイン類似度（pgvector） |
 | 取得チャンク数 | 上位3〜5件（要調整） |
-| 類似度閾値 | **0.62**（Q-02の実測で0.7から変更・Phase VALで最終調整） |
+| 類似度閾値 | **0.62**（実測で0.7から変更・精度検証フェーズで最終調整） |
 
-> **閾値を0.62にした根拠（Q-02）**
+> **閾値を0.62にした根拠**
 > 実測では、正解チャンクの類似度が平均0.68、文書に記載がない質問での最高スコアが0.57だった。
 > 初期値0.7では正解チャンク（0.68）まで弾かれ、記載がある質問にも「該当情報なし」を返してしまう。
 > 0.62であれば文書外（最高0.57）は0件のまま、記載ありは取得できる。
@@ -480,7 +480,7 @@ MVPではSOC2完全準拠を保証しません。SOC2は技術的対策だけで
 
 ### 5-1：評価データ
 
-- 評価データ：`case3-test-questions.csv`（講座提供・12問）
+- 評価データ：12問（正式な評価データ）
 - 追加問題の作成はMVP完成条件に含めない
 
 ### 5-2：テスト構成
@@ -513,18 +513,18 @@ MVPではSOC2完全準拠を保証しません。SOC2は技術的対策だけで
 | 開発期間 | 約2週間 |
 | 初期費用 | 480,000円（税込）以内 |
 | 月額 | 約50,000円以内（API・サービス利用料込み） |
-| AI API | Gemini API（模擬案件のコスト節約目的・本番採用は未確定） |
+| AI API | Gemini API（検証段階のコスト節約目的・本番採用は未確定） |
 | データリージョン | 東京（ap-northeast-1）を使用 |
 | 対象文書 | PDF5文書（MVPのみ） |
-| 評価データ | 講座提供の12問を使用（追加作成はMVP条件外） |
+| 評価データ | 12問を使用（追加作成はMVP条件外） |
 
 ---
 
-## 7. Worktree間の境界定義（並列開発用）
+## 7. 実装境界の定義（データ構造とAPI仕様）
 
-Worktree A・B・C が独立して実装を進めるために、以下の境界・インターフェースを事前に確定する。
+各担当領域が独立して実装を進められるよう、以下の境界・インターフェースを事前に確定する。
 
-### DBスキーマ（Worktree A が作成・管理）
+### DBスキーマ（文書取り込み担当が作成・管理）
 
 ```sql
 -- 文書テーブル
@@ -543,7 +543,7 @@ document_chunks (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   document_id uuid REFERENCES documents(id) ON DELETE CASCADE,
   content     text NOT NULL,           -- チャンクテキスト
-  embedding   vector(768),             -- Gemini Embedding次元数（Q-06：768で確定）
+  embedding   vector(768),             -- Gemini Embedding次元数（768で確定）
   chunk_index int NOT NULL,
   page_number int,                     -- 出典のページ番号（citations.page に使用）
   section     text,                    -- チャンク内の見出し（citations.section に使用）
@@ -555,7 +555,7 @@ document_chunks (
 > `POST /api/chat` の citations が `page` と `section` を返す仕様であるのに対し、
 > 初期スキーマにはページ番号を保持するカラムが無く、仕様どおりの出典を返せなかったため。
 
-### 検索用RPC関数（Worktree A が作成・Worktree B が呼び出す）
+### 検索用RPC関数（文書取り込み担当が作成・検索API担当が呼び出す）
 
 ```sql
 match_chunks(
@@ -570,19 +570,19 @@ match_chunks(
 
 - コサイン類似度で近いチャンクを返す（`similarity` は1に近いほど類似）
 - `status = 'ready'` の文書のみを対象とする（処理中・エラーの文書は検索されない）
-- 出典表示に必要な文書名・ページ番号・参照箇所を同時に返すため、Worktree B は documents を別途参照しなくてよい
+- 出典表示に必要な文書名・ページ番号・参照箇所を同時に返すため、検索API担当は documents を別途参照しなくてよい
 
 - Migration は `/supabase/migrations/` 配下でGit管理
 - `status` カラムにより、UI側でアップロード処理状態を確認可能にする
-- `embedding` の次元数は Gemini Embedding API の出力に合わせる（Q-06で確認）
+- `embedding` の次元数は Gemini Embedding API の出力に合わせる（で確認）
 
 ---
 
-### API境界（Worktree B が実装・Worktree C が呼び出す）
+### API境界（検索API担当が実装・UI担当が呼び出す）
 
 #### POST /api/chat
 
-Worktree C（UI）から呼び出す唯一のAPIエンドポイント。
+UI担当から呼び出す唯一のAPIエンドポイント。
 
 **リクエスト**
 ```json
@@ -607,7 +607,7 @@ Worktree C（UI）から呼び出す唯一のAPIエンドポイント。
 }
 ```
 
-> **`page` / `section` は null になり得る（Q-25）**
+> **`page` / `section` は null になり得る**
 > 文書側からページ番号・見出しを取得できない場合がある。空文字にするとUIで
 > 「p.」だけのラベルが表示されるため、値として `null` を返す。
 > UI側は `null` の項目を表示しない。`document_name` と `document_id` は必ず値が入る。
@@ -616,7 +616,7 @@ Worktree C（UI）から呼び出す唯一のAPIエンドポイント。
 > { "document_name": "経費精算マニュアル", "page": "p.2", "section": null, "document_id": "uuid" }
 > ```
 
-> **Q-20（2026-08-17 Worktree B確定）**：`page` / `section` はPDFから取得できない場合に `null` が返る。
+> **（2026-08-17 確定）**：`page` / `section` はPDFから取得できない場合に `null` が返る。
 > UI側は `null` の項目を表示しない（「（p.）」のような中身のないラベルを出さない）。
 > `document_name` と `document_id` は必ず値がある。
 
@@ -638,7 +638,7 @@ Worktree C（UI）から呼び出す唯一のAPIエンドポイント。
 
 #### GET /api/documents
 
-Worktree C（UI・文書一覧）が呼び出す。
+UI担当（文書一覧）が呼び出す。
 
 **レスポンス**
 ```json
@@ -658,7 +658,7 @@ Worktree C（UI・文書一覧）が呼び出す。
 
 #### POST /api/documents（アップロード処理開始）
 
-Worktree C（UI）から呼び出す。Worktree A のEmbeddingパイプラインをトリガー。
+UI担当から呼び出す。文書取り込み側のEmbeddingパイプラインをトリガー。
 
 **リクエスト**：multipart/form-data（PDFファイル）
 
@@ -690,9 +690,9 @@ Worktree C（UI）から呼び出す。Worktree A のEmbeddingパイプライン
 
 ---
 
-### 各Worktreeの実装境界まとめ
+### 実装境界まとめ
 
-| 項目 | Worktree A | Worktree B | Worktree C |
+| 項目 | 文書取り込み | 検索API | UI |
 |---|---|---|---|
 | DBスキーマ作成 | 担当 | 参照のみ | 参照しない |
 | Migration作成 | 担当 | 作成しない | 作成しない |
@@ -713,10 +713,10 @@ Worktree C（UI）から呼び出す。Worktree A のEmbeddingパイプライン
 | 2026-08-16 | v1.0 | 初版作成 |
 | 2026-08-16 | v1.1 | F-05チャットUIにデザイン確定仕様を追加・非機能要件3-5 UIデザイン要件を追加 |
 | 2026-08-16 | v1.2 | UI/UX仕様書に基づきF-05を全面改訂・F-07〜F-09追加・スコープ更新 |
-| 2026-08-16 | v1.3 | Worktree並列開発方針に基づきセクション7「Worktree間境界定義」を追加（DBスキーマ・API仕様・担当分担表） |
-| 2026-08-17 | v1.4 | スコープ外に「スキャンPDF・OCR処理」を追記（Q-17の判断・Phase 2スコープとして保留） |
+| 2026-08-16 | v1.3 | セクション7「実装境界の定義」を追加（DBスキーマ・API仕様・担当分担表） |
+| 2026-08-17 | v1.4 | スコープ外に「スキャンPDF・OCR処理」を追記（判断・Phase 2スコープとして保留） |
 | 2026-08-17 | v1.5 | セクション7のDBスキーマへ `page_number`・`section` を追加。API仕様の citations（page・section）を返すために必要だったため。あわせて `match_chunks` RPC関数の定義を追記 |
-| 2026-08-17 | v1.6 | セクション7の `/api/documents` に実装で確定した詳細を追記（multipartのフィールド名 `file`・成功時202・エラー時のHTTPステータスとレスポンス形式・一覧の並び順・同名文書の更新扱い）。**レスポンスのフィールド構成は変更していない**（TA-11〜TA-13の実装で確定した仕様の明文化） |
-| 2026-08-18 | v1.8 | **Phase ENH（納品前改善フェーズ）での反映**：`citations` へ `content`（該当箇所の本文）を追加（出典モーダルTE-06で原文を表示するため・**追加のみで既存フィールドは変更していない**）。DBスキーマへ `chat_histories`（質問履歴）・`user_settings`（利用者設定）を追加。`GET /api/documents` に `department`・`keyword` クエリパラメータを追加。`GET/POST /api/histories`・`GET/PUT /api/settings` を追加。`POST /api/chat` はAPI利用制限時にHTTP 429と専用文言を返すよう変更。**類似度閾値0.62は利用者設定に含めない**（ハルシネーション抑制のため・Q-38） |
-| 2026-08-17 | v1.7 | **Phase INT（main統合）での反映**：セクション4-2の類似度閾値を0.7→**0.62**へ変更（Q-02の実測根拠つき）。セクション7の `citations` の `page` / `section` が `null` になり得ることを明記（Q-25）。スキャンPDF・OCRのスコープ外はv1.4で対応済み（Q-17） |
-| 2026-08-20 | v1.9 | チャンキング方式を文字数分割から**見出し境界分割**に変更（出典精度改善・Q-20）。実機確認で出典の参照箇所が実際の該当箇所とずれていたため。12問の再検証で4観点すべて100%を確認 |
+| 2026-08-17 | v1.6 | セクション7の `/api/documents` に実装で確定した詳細を追記（multipartのフィールド名 `file`・成功時202・エラー時のHTTPステータスとレスポンス形式・一覧の並び順・同名文書の更新扱い）。**レスポンスのフィールド構成は変更していない**（〜の実装で確定した仕様の明文化） |
+| 2026-08-18 | v1.8 | **改善フェーズ（納品前改善フェーズ）での反映**：`citations` へ `content`（該当箇所の本文）を追加（出典モーダルで原文を表示するため・**追加のみで既存フィールドは変更していない**）。DBスキーマへ `chat_histories`（質問履歴）・`user_settings`（利用者設定）を追加。`GET /api/documents` に `department`・`keyword` クエリパラメータを追加。`GET/POST /api/histories`・`GET/PUT /api/settings` を追加。`POST /api/chat` はAPI利用制限時にHTTP 429と専用文言を返すよう変更。**類似度閾値0.62は利用者設定に含めない**（ハルシネーション抑制のため） |
+| 2026-08-17 | v1.7 | **統合フェーズ（main統合）での反映**：セクション4-2の類似度閾値を0.7→**0.62**へ変更（実測根拠つき）。セクション7の `citations` の `page` / `section` が `null` になり得ることを明記。スキャンPDF・OCRのスコープ外はv1.4で対応済み |
+| 2026-08-20 | v1.9 | チャンキング方式を文字数分割から**見出し境界分割**に変更（出典精度改善）。実機確認で出典の参照箇所が実際の該当箇所とずれていたため。12問の再検証で4観点すべて100%を確認 |

@@ -1,10 +1,10 @@
 import { generateEmbedding } from '@/lib/gemini/embedding';
 
 /**
- * 検索クエリのEmbedding生成（TB-01 / 要件F-02）
+ * 検索クエリのEmbedding生成（要件F-02）
  *
  * 質問テキストを文書側と同じ前処理・同じモデル・同じ次元数でベクトル化する。
- * ここがずれると検索結果が壊れるため、Worktree A の
+ * ここがずれると検索結果が壊れるため、文書取り込み側の
  * `src/lib/pdf/extractText.ts` の `normalizeText()` と処理を揃えている。
  */
 
@@ -18,9 +18,9 @@ import { generateEmbedding } from '@/lib/gemini/embedding';
 export const MAX_QUESTION_LENGTH = 1000;
 
 /**
- * NFKC正規化で変換されない文字の補正表（Q-18）。
+ * NFKC正規化で変換されない文字の補正表。
  *
- * 【重要】Worktree A の `RADICAL_SUPPLEMENT_MAP` と必ず同じ内容にすること。
+ * 【重要】文書取り込み側の `RADICAL_SUPPLEMENT_MAP` と必ず同じ内容にすること。
  *
  * PDFのフォント定義の都合で、文書側には通常の漢字ではなく
  * 「CJK部首補助」（U+2E80〜U+2EFF）の文字が含まれることがある。
@@ -46,9 +46,9 @@ export class InvalidQuestionError extends Error {
 }
 
 /**
- * 質問テキストを文書側と同じ形へ正規化する（Q-18）。
+ * 質問テキストを文書側と同じ形へ正規化する。
  *
- * 処理順は文書側（Worktree A）と揃えている。
+ * 処理順は文書側（文書取り込み側）と揃えている。
  *  1. Unicode正規化（NFKC）… 康熙部首・全角英数・半角カナを通常の文字へ統一する
  *  2. CJK部首補助の補正     … NFKCで直らない文字を個別に置換する
  *  3. 空白の整理             … 改行・連続空白を単一スペースへまとめる

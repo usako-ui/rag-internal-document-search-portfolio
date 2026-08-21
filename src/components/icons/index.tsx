@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 /**
  * アイコン集（Lucide Icons をインラインSVGとして実装）
  *
- * CLAUDE.md セクション10の規約：
+ * UI/UX仕様の規約：
  *  - アイコンはLucide Iconsのみ・stroke-width は 2〜2.2
  *  - 絵文字・イラストは使用しない
  *

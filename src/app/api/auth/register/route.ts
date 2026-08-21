@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { validateRegisterInput } from '@/lib/auth/registerRules';
 
 /**
- * POST /api/auth/register（TS-07 / 要件F-06）
+ * POST /api/auth/register（要件F-06）
  *
  * 社内メールアドレスでの自己登録を受け付ける。
  * Supabaseへ登録を投げる**前に**ドメインを検証し、対象外のアドレスは拒否する。
@@ -13,7 +13,7 @@ import { validateRegisterInput } from '@/lib/auth/registerRules';
  * 登録した相手がそのままログインでき、ドメイン制限が意味を失う。
  * 「社内ドメインのメールを受信できること」が唯一の本人確認手段である。
  * Supabaseダッシュボードの Authentication > Sign In / Providers >
- * 「Confirm email」を無効化してはいけない（tasks.md TS-06・TS-07に記録）。
+ * 「Confirm email」を無効化してはいけない。
  *
  * 【確認メールのリンク先について】
  * `emailRedirectTo` は**あえて指定していない**。

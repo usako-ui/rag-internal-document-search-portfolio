@@ -19,22 +19,22 @@ import {
 import { mockDocuments } from '@/mocks/documents';
 
 /**
- * 文書一覧とアップロード状態をまとめて扱うフック（TC-13〜TC-17）
+ * 文書一覧とアップロード状態をまとめて扱うフック
  *
  * ここが担当すること：
- *  - GET /api/documents の取得と、取り込み中のポーリング（TC-16）
- *  - POST /api/documents の送信とアップロード段階の管理（TC-13・TC-14）
- *  - エラーメッセージの保持（TC-15）
+ *  - GET /api/documents の取得と、取り込み中のポーリング
+ *  - POST /api/documents の送信とアップロード段階の管理
+ *  - エラーメッセージの保持
  *
  * 文書一覧とアップロードパネルの両方が同じ状態を見る必要があるため、
  * AppShellで1回だけ呼び出し、そこから各コンポーネントへ渡す。
  */
 
 /**
- * 文書一覧のサンプル表示フォールバック（Q-30）。
+ * 文書一覧のサンプル表示フォールバック。
  *
- * TB-11（認証Middleware）が未完成だった間の暫定措置。
- * Phase INT で全Worktreeを統合し、GET /api/documents が実データを返せる
+ * 認証Middlewareが未完成だった間の暫定措置。
+ * 統合フェーズ で全領域を統合し、GET /api/documents が実データを返せる
  * ようになったため false にした。実データが0件のときは、モックではなく
  * 「まだ文書が登録されていません」という空状態を表示する。
  *
@@ -74,7 +74,7 @@ export type DocumentLibrary = {
   /**
    * アップロードを開始する。
    * replacesDocumentName / replacesDocumentId は資料更新（F-08）から呼ばれたとき。
-   * ID を渡すと、改訂でPDFのタイトル行が変わっていてもその文書を置き換える（Q-50）。
+   * ID を渡すと、改訂でPDFのタイトル行が変わっていてもその文書を置き換える。
    */
   startUpload: (
     file: File,
@@ -88,7 +88,7 @@ export type DocumentLibrary = {
   removeDocument: (documentId: string) => Promise<void>;
   /** 完了・失敗したアップロード表示を閉じる */
   dismissJob: (jobId: string) => void;
-  /** 現在の絞り込み条件（TE-08） */
+  /** 現在の絞り込み条件 */
   filters: DocumentFilters;
   /** 絞り込み条件を変更する。変更すると一覧を取得し直す */
   setFilters: (filters: DocumentFilters) => void;
@@ -101,7 +101,7 @@ export function useDocumentLibrary(): DocumentLibrary {
   const [uploadJobs, setUploadJobs] = useState<UploadJob[]>([]);
 
   /**
-   * 絞り込み条件（TE-08）。
+   * 絞り込み条件。
    * サーバー側（GET /api/documents）で絞り込むため、変更のたびに取得し直す。
    */
   const [filters, setFilters] = useState<DocumentFilters>({});
@@ -217,7 +217,7 @@ export function useDocumentLibrary(): DocumentLibrary {
   );
 
   // ────────────────────────────────
-  // 文書一覧の取得（TC-16）
+  // 文書一覧の取得
   // ────────────────────────────────
 
   /**
@@ -267,7 +267,7 @@ export function useDocumentLibrary(): DocumentLibrary {
   }, [refresh]);
 
   /**
-   * 絞り込み条件が変わったら取得し直す（TE-08）。
+   * 絞り込み条件が変わったら取得し直す。
    *
    * 初回マウント時は下の「初回取得」が走るため、ここではスキップする
    * （両方走ると同じリクエストを2回投げてしまう）。
@@ -312,7 +312,7 @@ export function useDocumentLibrary(): DocumentLibrary {
   }, [shouldPoll]);
 
   // ────────────────────────────────
-  // アップロード（TC-13・TC-14・TC-15）
+  // アップロード
   // ────────────────────────────────
 
   const startUpload = useCallback(
@@ -343,7 +343,7 @@ export function useDocumentLibrary(): DocumentLibrary {
         onProgress: (percent) => updateJob(jobId, { progress: percent }),
         // 送信完了＝サーバーがテキスト抽出を開始した時点
         onUploadComplete: () => requestStage(jobId, 'uploaded'),
-        // 「更新」から呼ばれた場合だけ、置き換える文書をIDで指定する（Q-50）
+        // 「更新」から呼ばれた場合だけ、置き換える文書をIDで指定する
         replacesDocumentId: options?.replacesDocumentId ?? null,
       })
         .then((response) => {

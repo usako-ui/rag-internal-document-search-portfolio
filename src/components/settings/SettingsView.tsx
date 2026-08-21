@@ -15,7 +15,7 @@ import type { UserSettings } from '@/types/api';
 import { CheckCircleIcon, LoaderIcon, LogOutIcon } from '@/components/icons';
 
 /**
- * 設定画面（TE-10）
+ * 設定画面
  *
  * 設定項目（2026-08-18 確定）：
  *  1. 履歴表示件数（10件・20件・50件）
@@ -24,11 +24,11 @@ import { CheckCircleIcon, LoaderIcon, LogOutIcon } from '@/components/icons';
  *  4. メールアドレス表示（読み取り専用）
  *  5. ログアウトボタン
  *
- * 【類似度閾値を含めない理由（Q-38）】
+ * 【類似度閾値を含めない理由】
  * 閾値はハルシネーション抑制の要であり、利用者が緩められてはならないため
  * 0.62固定とし、設定項目から除外している。
  *
- * 【表示言語を含めない理由（Q-40）】
+ * 【表示言語を含めない理由】
  * UIの英語化（i18n）が未実装で、選んでも表示が変わらず誤案内になるため削除した。
  * 日本語のみ対応。英語対応を行う場合は、全画面の文言・日時書式を含む独立タスクとする。
  */
@@ -136,7 +136,7 @@ export function SettingsView({ userEmail }: SettingsViewProps) {
    * ログアウト（サイドバーのログアウトと同じ動き）
    *
    * 遷移に `window.location.href` を使うのは、Next.jsのルーターキャッシュに
-   * ログイン中の画面が残らないようにするため（CLAUDE.md セクション8）。
+   * ログイン中の画面が残らないようにするため（コーディング規約）。
    */
   const handleLogout = async () => {
     setIsLoggingOut(true);

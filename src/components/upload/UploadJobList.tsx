@@ -17,7 +17,7 @@ import {
 } from '@/components/icons';
 
 /**
- * アップロード処理状況の段階表示（TC-14・TC-15 / 要件F-07）
+ * アップロード処理状況の段階表示（要件F-07）
  *
  * 「アップロード済み → テキスト抽出中 → 検索用データを作成中 → 検索可能」を
  * 常に見える形で表示する。処理中に「今何をしているか分からない」状態を作らないため、
@@ -89,7 +89,7 @@ export function UploadJobList({ jobs, onDismiss, showHeading = true }: UploadJob
             )}
 
             {isError ? (
-              // エラーは原因と次の行動が分かる文言をそのまま出す（F-07・TC-15）
+              // エラーは原因と次の行動が分かる文言をそのまま出す（F-07）
               <div className={styles.errorBox} role="alert">
                 <span className={styles.errorIcon}>
                   <AlertCircleIcon size={13} strokeWidth={2.2} />

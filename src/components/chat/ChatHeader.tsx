@@ -9,7 +9,7 @@ type ChatHeaderProps = {
 };
 
 /**
- * 画面上部のヘッダー（TC-03）
+ * 画面上部のヘッダー
  *
  * 左：画面タイトル＋サブテキスト
  * 右：文書を検索・通知
@@ -32,7 +32,7 @@ export function ChatHeader({
       </div>
 
       <div className={styles.right}>
-        {/* ページ遷移は <a> タグを使う（CLAUDE.md セクション8・ルーターキャッシュ回避） */}
+        {/* ページ遷移は <a> タグを使う（コーディング規約・ルーターキャッシュ回避） */}
         <a href={NAV_ROUTES.search} className={styles.filterButton}>
           <SearchIcon size={12} strokeWidth={2.2} />
           <span className={styles.filterButtonLabel}>文書を検索</span>

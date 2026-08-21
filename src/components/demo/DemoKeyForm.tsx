@@ -64,7 +64,7 @@ export function DemoKeyForm() {
     setIsSubmitting(true);
     saveApiKey(apiKey);
 
-    // ページ遷移は window.location.href を使う（CLAUDE.md セクション8）
+    // ページ遷移は window.location.href を使う（コーディング規約）
     window.location.href = DEMO_CHAT_PATH;
   };
 

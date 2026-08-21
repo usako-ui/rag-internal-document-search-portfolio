@@ -10,7 +10,7 @@ import type { NavId } from '@/types/navigation';
  * 直接リンクがすべての画面で使えるようになる。
  *
  * 【遷移方法について】
- * 画面遷移は `window.location.href` を使う（CLAUDE.md セクション8）。
+ * 画面遷移は `window.location.href` を使う（コーディング規約）。
  * Next.jsのルーターキャッシュにログイン中の画面が残らないようにするため。
  */
 

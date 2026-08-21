@@ -34,7 +34,7 @@ type NavItem = {
  *
  * UX優先順位1〜4位（質問しやすい・PDFを追加しやすい・資料を更新しやすい・
  * 根拠を確認しやすい）に対応する画面を、すべてこの4項目で入口を1つにまとめている。
- * この4項目をメニューの奥に隠してはいけない（CLAUDE.md セクション10）。
+ * この4項目をメニューの奥に隠してはいけない（UI/UX仕様）。
  *
  * 【2026-08-18 構成変更】
  * 以前は「PDFアップロード」「資料更新」「検索フィルター」「文書一覧」が
@@ -118,11 +118,11 @@ export function Sidebar({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   /**
-   * ログアウト（TC-19 / 要件F-06）
+   * ログアウト（要件F-06）
    *
    * セッションCookieを破棄してからログイン画面へ遷移する。
    * 遷移に `window.location.href` を使うのは、Next.jsのルーターキャッシュに
-   * ログイン中の画面が残らないようにするため（CLAUDE.md セクション8）。
+   * ログイン中の画面が残らないようにするため（コーディング規約）。
    */
   const handleLogout = async () => {
     setIsLoggingOut(true);

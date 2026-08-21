@@ -1,12 +1,12 @@
 /**
- * POST /api/chat のHTTPレベル動作確認（TB-09・TB-10・TB-11）
+ * POST /api/chat のHTTPレベル動作確認
  *
  * 実際に起動中の開発サーバーへリクエストし、requirements.md セクション7の
  * API仕様どおりのレスポンスが返ることを確認する。
- *  - 未ログイン → 401（TB-11・F-06）
+ *  - 未ログイン → 401（F-06）
  *  - 質問が空   → 400（原因が分かるメッセージ）
- *  - 記載あり   → answer ＋ citations ＋ has_answer:true（TB-09）
- *  - 記載なし   → 定型文 ＋ citations:[] ＋ has_answer:false（TB-10）
+ *  - 記載あり   → answer ＋ citations ＋ has_answer:true
+ *  - 記載なし   → 定型文 ＋ citations:[] ＋ has_answer:false
  *
  * 検証用ユーザーは `.env.local` の TEST_USER_EMAIL / TEST_USER_PASSWORD を使う
  * （未設定の場合はその場で作成し、終了時に必ず削除する）。
@@ -27,11 +27,11 @@ loadEnv();
 const BASE_URL = process.env.VERIFY_BASE_URL ?? 'http://localhost:3002';
 
 /**
- * 検証用ユーザー。`.env.local` に設定があればそれを使う（Q-27で作成したユーザー）。
+ * 検証用ユーザー。`.env.local` に設定があればそれを使う（で作成したユーザー）。
  * 未設定の場合は一時ユーザーを作成し、実行後に削除する。
  */
 // 【重要】社内メールドメイン（ALLOWED_EMAIL_DOMAIN）以外のアドレスは
-// Middlewareが403で弾くため、フォールバック側も許可ドメインで組み立てる（TS-06）
+// Middlewareが403で弾くため、フォールバック側も許可ドメインで組み立てる
 const TEST_EMAIL = process.env.TEST_USER_EMAIL ?? `rag-api-verify@${requireAllowedDomain()}`;
 const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
 
@@ -121,10 +121,10 @@ async function main() {
   console.log('='.repeat(88));
 
   // ------------------------------------------------------------
-  // TB-11：未ログインのアクセスを拒否できること
+  // 未ログインのアクセスを拒否できること
   // ------------------------------------------------------------
   console.log('');
-  console.log('【TB-11】未認証アクセス');
+  console.log('未認証アクセス');
   const unauthorized = await postChat({ question: '在宅勤務手当はいくらですか？' });
   check('未ログインで401が返る', unauthorized.status === 401, `status=${unauthorized.status}`);
   check(
@@ -167,19 +167,19 @@ async function main() {
     const cookieHeader = await signInAndBuildCookie(password);
 
     // ------------------------------------------------------------
-    // TB-09：リクエスト検証
+    // リクエスト検証
     // ------------------------------------------------------------
     console.log('');
-    console.log('【TB-09】リクエストの検証');
+    console.log('リクエストの検証');
     const emptyQuestion = await postChat({ question: '   ' }, cookieHeader);
     check('空の質問で400が返る', emptyQuestion.status === 400, `status=${emptyQuestion.status}`);
     check('原因が分かるメッセージが返る', emptyQuestion.json.error === '質問を入力してください。', emptyQuestion.json.error ?? '');
 
     // ------------------------------------------------------------
-    // TB-09：文書に記載がある質問
+    // 文書に記載がある質問
     // ------------------------------------------------------------
     console.log('');
-    console.log('【TB-09】文書に記載がある質問');
+    console.log('文書に記載がある質問');
     const answered = await postChat({ question: '在宅勤務手当はいくらですか？' }, cookieHeader);
     check('200が返る', answered.status === 200, `status=${answered.status}`);
     check('has_answer が true', answered.json.has_answer === true);
@@ -197,10 +197,10 @@ async function main() {
     }
 
     // ------------------------------------------------------------
-    // TB-10：文書に記載がない質問
+    // 文書に記載がない質問
     // ------------------------------------------------------------
     console.log('');
-    console.log('【TB-10】文書に記載がない質問');
+    console.log('文書に記載がない質問');
     const noAnswer = await postChat({ question: '社長の名前は何ですか？' }, cookieHeader);
     check('200が返る', noAnswer.status === 200, `status=${noAnswer.status}`);
     check('has_answer が false', noAnswer.json.has_answer === false);
