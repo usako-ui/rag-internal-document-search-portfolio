@@ -437,7 +437,7 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_SUPABASE_URL` | SupabaseプロジェクトURL | ブラウザへ露出（公開してよい値） |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 匿名キー。RLS前提の公開キー | ブラウザへ露出（公開してよい値） |
 | `SUPABASE_SERVICE_ROLE_KEY` | 管理キー。RLSを迂回する | **サーバーのみ。絶対に露出させない** |
-| `ALLOWED_EMAIL_DOMAIN` | 社内メールドメイン（例：`example.co.jp`） | サーバーのみ |
+| `ALLOWED_EMAIL_DOMAIN` | 社内メールドメイン（例：`company.co.jp`） | サーバーのみ |
 | `GEMINI_API_KEY` | 回答生成・Embedding生成 | **サーバーのみ。絶対に露出させない** |
 | `TEST_USER_EMAIL` | 検証用ユーザーのメール（開発環境のみ） | サーバーのみ |
 | `TEST_USER_PASSWORD` | 検証用ユーザーのパスワード（開発環境のみ） | サーバーのみ |
@@ -471,7 +471,22 @@ DB側は環境変数を直接読めないため、このコマンドで `ALLOWED
 | 設定箇所 | 値 | 理由 |
 |---|---|---|
 | Authentication > Sign In / Providers > Confirm email | **有効のまま** | 社内メールを受信できることが唯一の本人確認手段のため |
+| Authentication > Hooks > Before User Created | **有効化する**（下記） | 社外アドレスでのアカウント作成自体を拒否するため |
 | Authentication > Policies > Leaked password protection | 有効を推奨（Proプラン限定） | 漏洩済みパスワードの使い回しを防ぐ |
+
+**Before User Created Hook の有効化（必須）**
+
+社外アドレスでのアカウント作成を拒否するフックです。
+SQLの適用（手順3）だけでは有効になりません。ダッシュボードでの設定が必要です。
+
+1. Supabaseダッシュボード > Authentication > Hooks を開く
+2. **Before User Created** を選び、Enable にする
+3. Hook type に **Postgres function** を選ぶ
+4. Schema は `public`、Function は `before_user_created_domain_check` を選ぶ
+5. Save
+
+有効化すると、`ALLOWED_EMAIL_DOMAIN` 以外のアドレスは、
+このアプリを経由せずSupabaseへ直接登録しようとしても拒否されます。
 
 ### 6. 開発サーバーの起動
 
@@ -538,17 +553,19 @@ npm run create:test-user
 ### 認証・アクセス制御
 
 - Supabase Authによるメール認証。**メール確認必須**（社内メールを受信できることが本人確認の根拠）
-- 社内メールドメイン制限を**3層**で実施
-  1. ログイン・登録API：Supabaseへ問い合わせる前にドメインを検証
-  2. 認証Middleware：全リクエストで、Supabaseが検証済みのメールアドレスを確認
-  3. **DB（RLS）**：`documents` / `document_chunks` は社内ドメインのユーザーのみ参照可
-- ドメイン判定は**完全一致**。類似ドメイン（`evilexample.co.jp` など）・サブドメインも拒否
+- 社内メールドメイン制限を**4層**で実施
+  1. **Auth Hook（Before User Created）**：社外アドレスでのアカウント作成自体を拒否
+  2. ログイン・登録API：Supabaseへ問い合わせる前にドメインを検証
+  3. 認証Middleware：全リクエストで、Supabaseが検証済みのメールアドレスを確認
+  4. **DB（RLS）**：`documents` / `document_chunks` は社内ドメインのユーザーのみ参照可
+- ドメイン判定は**完全一致**。類似ドメイン（`evilcompany.co.jp` など）・サブドメインも拒否
 - `ALLOWED_EMAIL_DOMAIN` 未設定時は**全ログインを拒否**（fail-closed）。設定漏れで社外アドレスを素通りさせない
 - 未ログインでアクセスできるのは、ランディング（`/`）・ログイン・登録・BYOKデモ（`/demo`）のみ
 
-3層にしている理由は、anonキーが `NEXT_PUBLIC_` でブラウザへ配られる公開値であり、
+4層にしている理由は、anonキーが `NEXT_PUBLIC_` でブラウザへ配られる公開値であり、
 アプリを経由せずSupabaseを直接呼び出せるためです。
-アプリ側のチェックだけでは、この経路を塞げません。
+アプリ側（2・3）のチェックだけでは、この経路を塞げません。
+1がアカウント作成の入口を、4が万一作成されたアカウントからの閲覧を止めます。
 
 ### データ保護
 

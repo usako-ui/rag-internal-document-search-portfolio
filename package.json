@@ -21,6 +21,7 @@
     "verify:chat-api": "tsx scripts/verify-chat-api.ts",
     "verify:multi-doc": "tsx scripts/verify-multi-document.ts",
     "create:test-user": "tsx scripts/create-test-user.ts",
+    "create:reviewer": "tsx scripts/create-reviewer-user.ts",
     "sync:allowed-domain": "tsx scripts/sync-allowed-domain.ts",
     "validate:rag": "tsx scripts/validate-rag.ts",
     "verify:step1": "tsx scripts/verify-step1.ts",

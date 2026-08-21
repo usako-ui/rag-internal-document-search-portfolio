@@ -57,7 +57,7 @@ alter table public.app_config enable row level security;
 -- 全社員が文書を読めなくなるため、既存の設定値を初期値として登録する。
 -- ------------------------------------------------------------
 insert into public.app_config (key, value)
-values ('allowed_email_domain', 'techbridge.co.jp')
+values ('allowed_email_domain', 'company.co.jp')
 on conflict (key) do nothing;
 
 -- ------------------------------------------------------------
@@ -73,7 +73,7 @@ on conflict (key) do nothing;
 --   そのため中の参照はすべて完全修飾（public. / auth.）で書く。
 --
 -- 判定は完全一致。`endsWith` 相当の後方一致にすると
--- eviltechbridge.co.jp のような別ドメインを通してしまう
+-- evilcompany.co.jp のような別ドメインを通してしまう
 -- （src/lib/auth/emailDomain.ts と同じ考え方）。
 --
 -- 設定が無い・空・メールにドメインが無い場合はすべて false（fail-closed）。

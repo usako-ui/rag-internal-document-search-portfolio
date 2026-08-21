@@ -155,7 +155,7 @@ export function RegisterForm({ allowedDomain }: RegisterFormProps) {
             name="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@techbridge.co.jp"
+            placeholder="you@company.co.jp"
             autoComplete="email"
             autoFocus
             disabled={isSubmitting}

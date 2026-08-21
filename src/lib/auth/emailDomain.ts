@@ -41,7 +41,7 @@ export const ALLOWED_EMAIL_DOMAIN_ENV = 'ALLOWED_EMAIL_DOMAIN';
  * 社外アドレスが素通りし、しかも誰も気付けない。
  * 全員がログインできない方が異常に気付けるため、閉じる側へ倒す。
  *
- * 値は `techbridge.co.jp` 形式で設定する（`@` 付き・大文字でも動くよう正規化する）。
+ * 値は `company.co.jp` 形式で設定する（`@` 付き・大文字でも動くよう正規化する）。
  */
 export function getAllowedEmailDomain(): string | null {
   const raw = process.env[ALLOWED_EMAIL_DOMAIN_ENV];
@@ -73,9 +73,9 @@ function extractDomain(email: string | null | undefined): string | null {
  * メールアドレスが許可ドメインかどうかを判定する。
  *
  * 【判定は完全一致】`endsWith` で判定してはいけない。
- * `endsWith('techbridge.co.jp')` だと、攻撃者が取得した
- * `eviltechbridge.co.jp` や `techbridge.co.jp.example.com` を通してしまう。
- * サブドメイン（`mail.techbridge.co.jp`）も別ドメイン扱いで拒否する
+ * `endsWith('company.co.jp')` だと、攻撃者が取得した
+ * `evilcompany.co.jp` や `company.co.jp.example.com` を通してしまう。
+ * サブドメイン（`mail.company.co.jp`）も別ドメイン扱いで拒否する
  * （必要になった時点で要確認事項として扱い、ここを明示的に拡張すること）。
  *
  * @param email 判定対象のメールアドレス

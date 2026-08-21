@@ -16,7 +16,7 @@ export function requireAllowedDomain(): string {
   if (!domain) {
     throw new Error(
       `環境変数 ${ALLOWED_EMAIL_DOMAIN_ENV} が設定されていません。` +
-        '.env.local に社内メールドメイン（例：techbridge.co.jp）を設定してください。'
+        '.env.local に社内メールドメイン（例：company.co.jp）を設定してください。'
     );
   }
 
