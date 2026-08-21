@@ -1,4 +1,3 @@
-import { PDFParse } from 'pdf-parse';
 import {
   MAX_PDF_SIZE_BYTES,
   createNoTextError,
@@ -145,6 +144,18 @@ export async function extractTextFromPdf(data: Buffer | Uint8Array): Promise<Ext
   if (data.byteLength > MAX_PDF_SIZE_BYTES) {
     throw createSizeExceededError(data.byteLength);
   }
+
+  // pdf-parse は必要になった時点で読み込む（静的importにしない）。
+  //
+  // このモジュールは文書API（`/api/documents`）から読み込まれるが、
+  // pdf-parse を実際に使うのはアップロード（POST）だけで、
+  // 一覧取得（GET）・削除（DELETE）では使わない。
+  //
+  // 静的importにすると、ルートを読み込んだ時点で pdf-parse も必ず読み込まれ、
+  // その読み込みに失敗した場合は**GET・DELETEまで500になる**。
+  // 実行環境によっては pdfjs-dist の読み込みに失敗することがあるため、
+  // 影響をアップロード時だけに閉じ込める。
+  const { PDFParse } = await import('pdf-parse');
 
   const parser = new PDFParse({ data });
 
