@@ -144,7 +144,17 @@ export function RegisterForm({ allowedDomain }: RegisterFormProps) {
           社内メールアドレスで登録してください。確認メールをお送りします。
         </p>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
+        {/*
+          method="post" を付ける理由（見た目には影響しない）。
+
+          通常はJavaScriptの onSubmit が送信を止めてAPIを呼ぶ。
+          しかしJavaScriptの読み込みに失敗した場合、ブラウザは素のフォーム送信を行う。
+          method の既定は GET のため、そのとき**入力したパスワードがURLへ載る**
+          （履歴・アクセスログ・Refererに残る）。実際に検証環境で発生した。
+
+          post にしておけば、同じ状況でもパスワードがURLに現れない。
+        */}
+        <form className={styles.form} method="post" onSubmit={handleSubmit} noValidate>
           <label className={styles.label} htmlFor="register-email">
             メールアドレス
           </label>
