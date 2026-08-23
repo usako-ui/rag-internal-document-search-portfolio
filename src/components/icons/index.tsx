@@ -9,6 +9,20 @@ import type { ReactNode } from 'react';
  *
  * ライブラリを追加せずインラインSVGで持つことで、デザインリファレンスと
  * 完全に同じ描画になり、バンドルサイズも増えない。
+ *
+ * ------------------------------------------------------------
+ * 【第三者著作物の表示】
+ *
+ * このファイルのSVGパスデータは Lucide（https://lucide.dev/）のものです。
+ * Lucide は ISC License、Feather 由来の部分は MIT License で提供されており、
+ * いずれも**著作権表示を保持すること**が利用条件です。
+ *
+ *   Copyright (c) 2026 Lucide Icons and Contributors        (ISC License)
+ *   Copyright (c) 2013-present Cole Bemis                   (MIT License / Feather)
+ *
+ * ライセンス全文は、リポジトリ直下の NOTICE.md に記載しています。
+ * **アイコンを追加・変更する場合も、この表示を削除しないこと。**
+ * ------------------------------------------------------------
  */
 
 export type IconProps = {

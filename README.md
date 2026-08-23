@@ -618,4 +618,22 @@ SOC2は技術的対策だけでなく、組織体制・運用ルール・監査�
 | [docs/validation/rag-accuracy-report.md](docs/validation/rag-accuracy-report.md) | RAG精度検証レポート |
 | [requirements.md](requirements.md) | 要件定義書 |
 | [project-overview.md](project-overview.md) | プロジェクト概要 |
+| [NOTICE.md](NOTICE.md) | 同梱している第三者著作物とその利用条件 |
+
+---
+
+## ライセンス・利用条件
+
+**本リポジトリは、制作物をご覧いただくために公開しています。**
+オープンソースライセンスは付与しておらず、著作権はすべて留保します。
+
+| | |
+|---|---|
+| 閲覧 | ご自由にどうぞ |
+| コードの複製・改変・再配布 | 想定していません |
+
+同梱している第三者の著作物（アイコンなど）とその利用条件は
+[NOTICE.md](NOTICE.md) を参照してください。
+
+&copy; 2026 usako-ui
 
