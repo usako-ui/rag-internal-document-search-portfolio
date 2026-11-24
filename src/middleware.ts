@@ -77,9 +77,6 @@ const PUBLIC_PREFIX_PATHS = ['/demo'];
 /** ランディングページ（完全一致のみ公開。配下は保護対象のまま） */
 const LANDING_PATH = '/';
 
-/** ログイン済みの利用者を送る初期画面（lib/auth/redirect.ts の DEFAULT_REDIRECT_PATH と一致させること） */
-const DASHBOARD_PATH = '/dashboard';
-
 /** 未ログイン時にAPIが返すメッセージ（UIでそのまま表示できる文言にする） */
 const UNAUTHORIZED_MESSAGE = 'ログインが必要です。ログインしてから再度お試しください。';
 
@@ -104,6 +101,22 @@ function isPublicPath(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  /*
+   * 公開パスは、Supabaseにも環境変数にも触れずに通す。
+   *
+   * 以前は getUser() の後に判定しており、Supabaseが応答しないと
+   * ランディングやデモまで時間切れ（504）で開けなくなっていた。
+   * 公開ページは認証を使わないため、外部サービスの状態に表示を左右させない。
+   *
+   * ログイン画面も公開パスのため、ドメイン制限で弾かれた利用者が
+   * ログイン画面へ戻されても無限ループにならない
+   */
+  if (isPublicPath(pathname)) {
+    return NextResponse.next({ request });
+  }
+
   // Supabaseが更新したCookieを載せるためのレスポンス。
   // 認証済みの場合はこのレスポンスをそのまま返す
   let response = NextResponse.next({ request });
@@ -137,33 +150,6 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
-
-  // 公開パスはここで確定させる。
-  // ログイン画面をドメイン制限の対象にすると、弾かれた利用者がログイン画面にも
-  // 入れずリダイレクトが無限ループするため、判定は必ず認証チェックより先に行う
-  if (isPublicPath(pathname)) {
-    /*
-     * ログイン済みの利用者がランディングを開いたらダッシュボードへ送る。
-     *
-     * ランディングは未ログインの訪問者へ「デモ／ログイン」を案内する画面で、
-     * すでにログインしている人には用がない。毎回「ログイン」を押させないための遷移。
-     *
-     * ドメイン確認を通った場合だけ送ること。
-     * 社外ドメインのセッションをダッシュボードへ送ると、
-     * その先で弾かれてログイン画面へ戻され、行き来しているように見えてしまう。
-     */
-    if (pathname === LANDING_PATH && user && checkEmailDomain(user.email).allowed) {
-      const dashboardUrl = request.nextUrl.clone();
-      dashboardUrl.pathname = DASHBOARD_PATH;
-      dashboardUrl.search = '';
-
-      return NextResponse.redirect(dashboardUrl);
-    }
-
-    return response;
-  }
 
   if (!user) {
     // APIはリダイレクトすると呼び出し側でHTMLが返り原因が分からなくなるため、401をJSONで返す

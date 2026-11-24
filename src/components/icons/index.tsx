@@ -341,7 +341,7 @@ export function PlayIcon(props: IconProps) {
   );
 }
 
-/** ログイン（ランディングのCTAボタン用） */
+/** ログイン（現在は未使用。LPからログイン導線を外したため。再び置く時のために残している） */
 export function LogInIcon(props: IconProps) {
   return (
     <IconBase {...props}>

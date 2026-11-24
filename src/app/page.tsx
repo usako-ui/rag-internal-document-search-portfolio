@@ -1,10 +1,11 @@
 import styles from '@/components/landing/Landing.module.css';
 import { ChatPreview } from '@/components/landing/ChatPreview';
+import { Phrase } from '@/components/landing/Phrase';
 import {
   BookOpenIcon,
   FileTextIcon,
   LockIcon,
-  LogInIcon,
+  MessageSquareIcon,
   PlayIcon,
   SearchIcon,
 } from '@/components/icons';
@@ -13,7 +14,9 @@ import {
  * ランディングページ（`/`）
  *
  * 未ログインでも開ける公開ページ。
- * 「デモとして試す」「ログインして使う」の2導線を提示する。
+ * 製品の導線は「デモとして試す」だけにする（ページ下部に「つくった人」への相談の入口がある）。
+ * 公開版は Supabase を持たずログインできないため、ログイン画面へのリンクは置かない
+ * （/login・/register のページ自体は残している）。
  *
  * 【認証について】
  * この画面は Middleware の公開パス（完全一致 `/`）に含まれており、認証を行わない。
@@ -72,6 +75,13 @@ const FEATURES = [
   },
 ];
 
+/**
+ * 「つくった人」の連絡先（オーナーが公開してよいと決めた2か所。本名・メールアドレスは載せない）。
+ * LINE はサイト外（GitHub など）からの経路用のURLを使う。ほかの模擬案件のLPとそろえること
+ */
+const LINE_URL = 'https://line.me/R/ti/p/@745jejoa';
+const PORTFOLIO_URL = 'https://misako-profile-portfolio.vercel.app/';
+
 /** 技術スタック（フッター表示用） */
 const TECH_TAGS = ['Next.js 14', 'Supabase', 'Gemini API', 'pgvector'];
 
@@ -97,9 +107,6 @@ export default function LandingPage() {
           </a>
           <a href="/demo" className={styles.btnGhost}>
             デモを試す
-          </a>
-          <a href="/login" className={styles.btnPrimary}>
-            ログイン
           </a>
         </div>
       </nav>
@@ -131,11 +138,13 @@ export default function LandingPage() {
                 <PlayIcon size={15} strokeWidth={2.2} />
                 デモとして試す
               </a>
-              <a href="/login" className={styles.btnHeroSecondary}>
-                <LogInIcon size={15} />
-                ログインして使う
-              </a>
             </div>
+
+            <p className={`${styles.loginNote} ${styles.phrase}`}>
+              <Phrase text="本番版は、|社内アカウントで|ログインして|使う|設計です。" />
+              <br className={styles.pcBreak} />
+              <Phrase text="このページでは、|サンプル文書で|体験版を|お試し|いただけます。" />
+            </p>
 
             <div className={styles.heroStats}>
               {STATS.map((stat) => (
@@ -198,8 +207,57 @@ export default function LandingPage() {
               <PlayIcon size={15} strokeWidth={2.2} />
               デモとして試す
             </a>
-            <a href="/login" className={styles.btnHeroSecondary}>
-              ログインして使う
+          </div>
+
+          {/* すぐ上の文と重ならないよう、CTA では前半の1文だけにする */}
+          <p className={`${styles.loginNote} ${styles.phrase}`}>
+            <Phrase text="本番版は、|社内アカウントで|ログインして|使う|設計です。" />
+          </p>
+        </div>
+      </section>
+
+      {/*
+        つくった人（相談の入口）。ほかの模擬案件のLPと同じ文言・同じ2つのボタンにそろえる。
+        押し売りにならない呼びかけにし、LINE を一番目立たせる
+      */}
+      <section className={styles.aboutSection} aria-labelledby="about-title">
+        <div className={styles.aboutInner}>
+          <div className={styles.sectionLabel}>Contact</div>
+
+          {/*
+            PC は意味の切れ目で改行する（pcBreak）。スマホでは pcBreak を消し、
+            Phrase の文節の区切りで自然に折り返す
+          */}
+          <h2 className={`${styles.aboutTitle} ${styles.phrase}`} id="about-title">
+            <Phrase text="業務の|「ちょっと困った」を、" />
+            <br />
+            <Phrase text="仕組みで|解決しませんか？" />
+          </h2>
+
+          <p className={`${styles.aboutLead} ${styles.phrase}`}>
+            <Phrase text="個人事業主・|小規模〜中規模|事業者向けに、" />
+            <br className={styles.pcBreak} />
+            {/* 「AI 活用」の間のスペースで折り返さないよう、詰めて1語にする */}
+            <Phrase text="業務課題に|合わせた|AI活用・|システム開発の|相談を|承ります。" />
+          </p>
+          <p className={`${styles.aboutSub} ${styles.phrase}`}>
+            <Phrase text="この|文書検索のように、|社内の|「探す手間」を、" />
+            <br className={styles.pcBreak} />
+            <Phrase text="使いやすい|仕組みに|変える|お手伝いを|しています。" />
+            <br className={styles.pcBreak} />
+            <Phrase text="「うちでも|できるかな？」という|段階の|ご相談も|歓迎です。" />
+          </p>
+
+          <div className={styles.ctaActions}>
+            <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className={styles.btnHeroPrimary}>
+              <MessageSquareIcon size={15} strokeWidth={2.2} />
+              {/* 「LINE」と「公式」の間で折り返さないよう、改行しないスペースでつなぐ */}
+              LINE&nbsp;公式で相談する
+              <span className="srOnly">（新しいタブで開きます）</span>
+            </a>
+            <a href={PORTFOLIO_URL} target="_blank" rel="noopener noreferrer" className={styles.btnHeroSecondary}>
+              ポートフォリオを見る
+              <span className="srOnly">（新しいタブで開きます）</span>
             </a>
           </div>
         </div>

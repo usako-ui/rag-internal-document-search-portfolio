@@ -85,26 +85,6 @@
   background: var(--lp-green-dim);
 }
 
-.btnPrimary {
-  padding: 8px 20px;
-  background: var(--green);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 0 20px var(--lp-green-glow);
-  transition:
-    opacity 0.2s,
-    box-shadow 0.2s;
-}
-
-.btnPrimary:hover {
-  opacity: 0.9;
-  box-shadow: 0 0 32px var(--lp-green-glow);
-}
-
 /* ────────────────────────────────
    ヒーロー
    ──────────────────────────────── */
@@ -249,29 +229,40 @@
   box-shadow: 0 4px 40px var(--lp-green-glow);
 }
 
-.btnHeroSecondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  border: 1px solid var(--lp-border);
-  background: var(--lp-surface-soft);
-  color: var(--lp-text);
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  backdrop-filter: blur(8px);
-  transition:
-    border-color 0.2s,
-    background 0.2s,
-    transform 0.2s;
+/*
+ * 文節で折り返す文（Phrase 部品と組み合わせて使う）。
+ * keep-all で語の途中では折り返さず、<wbr> と句読点の位置だけで折り返す。
+ * 入りきらない長さの時だけ anywhere で折り返し、横にはみ出さないようにする
+ */
+.phrase {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
-.btnHeroSecondary:hover {
-  border-color: var(--lp-border-strong);
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
+/* 対応ブラウザでは、ブラウザ自身の文節判定も使う */
+@supports (word-break: auto-phrase) {
+  .phrase {
+    word-break: auto-phrase;
+  }
+}
+
+/*
+ * PC だけで効かせる改行（スマホでは消して、文節で自然に折り返す）。
+ * 直前の文は「、」か「。」で終えること。句読点で終わらないと、
+ * スマホで改行を消した位置に折り返しの余地がなくなり、狭い画面で文字の途中で切れる
+ */
+.pcBreak {
+  display: inline;
+}
+
+/* ログイン導線を外した代わりに、本番版の使い方を1行で添える */
+.loginNote {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--lp-text-sub);
+  line-height: 1.7;
+  /* CTA の背景装飾より前面に出すため（.ctaSub と同じ扱い） */
+  position: relative;
 }
 
 .heroStats {
@@ -713,6 +704,69 @@
 }
 
 /* ────────────────────────────────
+   つくった人（相談の入口）
+   ──────────────────────────────── */
+
+.aboutSection {
+  padding: 80px 48px 100px;
+  border-top: 1px solid var(--lp-border);
+  text-align: center;
+}
+
+.aboutInner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.aboutTitle {
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.aboutLead {
+  font-size: 14.5px;
+  color: var(--lp-text);
+  line-height: 1.9;
+  margin-bottom: 12px;
+}
+
+.aboutSub {
+  font-size: 13.5px;
+  color: var(--lp-text-sub);
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+
+/* 相談の入口の2つ目のボタン（LINE より目立たせない） */
+.btnHeroSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border: 1px solid var(--lp-border);
+  background: var(--lp-surface-soft);
+  color: var(--lp-text);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+
+.btnHeroSecondary:hover {
+  border-color: var(--lp-border-strong);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+/* ────────────────────────────────
    フッター
    ──────────────────────────────── */
 
@@ -796,6 +850,10 @@
     padding: 40px 24px;
   }
 
+  .aboutSection {
+    padding: 60px 24px 72px;
+  }
+
   .footer {
     padding: 20px 24px;
     flex-direction: column;
@@ -806,6 +864,10 @@
 @media (max-width: 640px) {
   .heroStats {
     gap: 20px;
+  }
+
+  .pcBreak {
+    display: none;
   }
 
   .btnHeroPrimary,
